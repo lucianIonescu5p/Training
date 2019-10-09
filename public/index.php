@@ -1,22 +1,35 @@
 <?php
-
 session_start(); 
 
-if(empty($_SESSION['cart']))
-$_SESSION['cart']=array();
-if(isset($_GET['id']))
-array_push($_SESSION['cart'],$_GET['id']);
+if(empty($_SESSION['cart'])) {
+    $_SESSION['cart']=array();
+};
 
-?>
+if(isset($_GET['id'])) {
+    array_push($_SESSION['cart'],$_GET['id']);
+};
 
-<?php
 // Create connection
-    require_once 'config.php';
-    require_once 'common.php';
+require_once 'config.php';
+require_once 'common.php';
+    
+$inQuery = implode(',', array_fill(0, count($_SESSION['cart']), '?'));
+$stmt = $conn->prepare(
+    'SELECT * 
+     FROM products 
+     WHERE id NOT IN (".$inQuery.")'
+);
 
-    $sql = "SELECT * FROM products";
-    $result = $conn->query($sql);
+$res = $stmt->execute($_SESSION['cart']);
+$stmt->setFetchMode(PDO::FETCH_ASSOC);
+$rows = $stmt->fetchAll();
+    // $sql = "SELECT * FROM products";
+    // $result = $conn->query($sql);
+    //  $rows = array();
 
+    //  for($i=0; $i < $result->num_rows; $i++){
+    //      $rows[] = $result->fetch_assoc();
+    //  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,15 +47,14 @@ array_push($_SESSION['cart'],$_GET['id']);
     <div id="table">
         <table border="1">
             <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Add</th>
+                <th><?= trans('ID') ?></th>
+                <th><?= trans('Title') ?></th>
+                <th><?= trans('Description') ?></th>
+                <th><?= trans('Price') ?></th>
+                <th><?= trans('Add') ?></th>
             </tr>
 
-            <?php for($i=0; $i < $result->num_rows; $i++): ?>
-            <?php $row = $result->fetch_assoc(); ?>
+            <?php foreach($rows as $row): ?>
                 <tr>
                     <td><?= $row['id'] ?></td>
                     <td><?= $row['title'] ?></td>
@@ -50,13 +62,13 @@ array_push($_SESSION['cart'],$_GET['id']);
                     <td><?= $row['price'] ?></td>
                     <td><a href="?id=<?= $row['id']?>">Add Item</a></td>
                 </tr>
-            <?php endfor; ?>  
+            <?php endforeach; ?>  
 
         </table>  
     </div>
 
     <div class="cartLink">
-        <a href="cart.php" class="cartBtn">Go to cart</a>
+        <a href="cart.php" class="cartBtn"><?= trans('Go to cart') ?></a>
     </div>
 
 </div>

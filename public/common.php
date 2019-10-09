@@ -1,8 +1,13 @@
 <?php
-    $conn = new mysqli(SERVERNAME, USERNAME, PASSWORD, DBNAME);
-    // Check connection
+require_once 'config.php';
+$conn = new PDO("mysql:host=".SERVERNAME.";dbname=".DBNAME."", USERNAME, PASSWORD);
+$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    if ($conn->connect_error) 
-    {
-        die("Connection failed: " . $conn->connect_error);
-    }
+function trans($label) 
+{
+    $translations = [
+        'ID' => '#'
+    ];
+
+    return isset($translations[$label]) ? $translations[$label] : $label;
+};
