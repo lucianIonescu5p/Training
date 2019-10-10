@@ -1,7 +1,7 @@
 <?php
-define('SERVERNAME', '#');
-define('USERNAME', '#');
+define('SERVERNAME', '');
+define('USERNAME', '');
 define('PASSWORD', '');
-define('DBNAME', '#');
+define('DBNAME', '');
 
 
