@@ -2,25 +2,33 @@
 
 require_once 'common.php';
 
-if(empty($_SESSION['cart'])) {
-    $_SESSION['cart'] = array();
-    $empty = "Cart is empty";
-} else {
-    if(isset($_GET['id'])) {
-        array_push($_SESSION['cart']);
-        header("Location: cart.php");
-    };
+// if(empty($_SESSION['cart'])) {
+//     $_SESSION['cart'] = array();
+// } 
+    
+if (isset($_GET['remove'])) 
+{
+    foreach ($_SESSION['cart'] as $key => $value) 
+    {
+        if ($value == $_GET['remove']) {
+            unset($_SESSION['cart'][$key]);
+            array_search($_GET['id'], $_SESSION['cart']);
+            header("Location: cart.php");
+        }
+        
+    }
+        
+};
 
-    $sql = 
-    'SELECT * FROM products 
-    WHERE id IN (' . implode(',', array_fill(0, count($_SESSION['cart']), '?')) . ')';
+$sql = 
+'SELECT * FROM products 
+WHERE id IN (' . implode(',', array_fill(0, count($_SESSION['cart']), '?')) . ')';
 
 $stmt = $conn->prepare($sql);
-
 $res = $stmt->execute($_SESSION['cart']);
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $rows = $stmt->fetchAll();
-};
+
 
 // if(isset($_GET['id'])) {
 //     array_push($_SESSION['cart']);
@@ -53,22 +61,22 @@ $rows = $stmt->fetchAll();
 
         <p><u><?= trans('Cart details:') ?></u></p>
 
-        <table border="1">
+        <table border="1" cellpadding="3">
 
             <tr>
-                <th><?= trans('Name') ?></th>
-                <th><?= trans('Description') ?></th>
-                <th><?= trans('Price') ?></th>
-                <th><?= trans('Remove from cart') ?></th>
+                <th align="middle"><?= trans('Name') ?></th>
+                <th align="middle"><?= trans('Description') ?></th>
+                <th align="middle"><?= trans('Price') ?></th>
+                <th align="middle"><?= trans('Remove from cart') ?></th>
             </tr>
 
             <?php foreach($rows as $row): ?>
 
                 <tr>
-                    <td><?= $row['title'] ?></td>
-                    <td><?= $row['description'] ?></td>
-                    <td><?= $row['price'] ?></td>
-                    <td><a href="?id=<?= $row['id']?>"><?= trans('Remove') ?></a></td>
+                    <td align="middle"><?= $row['title'] ?></td>
+                    <td align="middle"><?= $row['description'] ?></td>
+                    <td align="middle"><?= $row['price'] ?></td>
+                    <td align="middle"><a href="?remove=<?= $row['id']?>"><?= trans('Remove') ?></a></td>
                 </tr>
 
             <?php endforeach; ?>

@@ -2,11 +2,11 @@
 
 require_once 'common.php';
 
-if(empty($_SESSION['cart'])) {
+if (empty($_SESSION['cart'])) {
     $_SESSION['cart'] = array();
 };
 
-if(isset($_GET['id'])) {
+if (isset($_GET['id'])) {
     array_push($_SESSION['cart'], $_GET['id']);
     header("Location: index.php");
 };
@@ -39,22 +39,22 @@ $rows = $stmt->fetchAll();
     <div id="container">
 
         <div id="table">
-            <table border="1">
+            <table border="1" cellpadding="3">
                 <tr>
-                    <th><?= trans('ID') ?></th>
-                    <th><?= trans('Title') ?></th>
-                    <th><?= trans('Description') ?></th>
-                    <th><?= trans('Price') ?></th>
-                    <th><?= trans('Add') ?></th>
+                    <th align="middle"><?= trans('ID') ?></th>
+                    <th align="middle"><?= trans('Title') ?></th>
+                    <th align="middle"><?= trans('Description') ?></th>
+                    <th align="middle"><?= trans('Price') ?></th>
+                    <th align="middle"><?= trans('Add') ?></th>
                 </tr>
 
                 <?php foreach($rows as $row): ?>
                     <tr>
-                        <td><?= $row['id'] ?></td>
-                        <td><?= $row['title'] ?></td>
-                        <td><?= $row['description'] ?></td>
-                        <td><?= $row['price'] ?></td>
-                        <td><a href="?id=<?= $row['id']?>"><?= trans('Add Item') ?></a></td>
+                        <td align="middle"><?= $row['id'] ?></td>
+                        <td align="middle"><?= $row['title'] ?></td>
+                        <td align="middle"><?= $row['description'] ?></td>
+                        <td align="middle"><?= $row['price'] ?></td>
+                        <td align="middle"><a href="?id=<?= $row['id']?>"><?= trans('Add Item') ?></a></td>
                     </tr>
                 <?php endforeach; ?>  
 
