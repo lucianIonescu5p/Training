@@ -2,22 +2,25 @@
 
 require_once 'common.php';
 
-// if(empty($_SESSION['cart'])) {
-//     $_SESSION['cart'] = array();
-// } 
-    
+if(empty($_SESSION['cart'])) {
+    $_SESSION['cart'] = array(0);
+} 
+
+//remove items from the cart
 if (isset($_GET['remove'])) 
 {
     foreach ($_SESSION['cart'] as $key => $value) 
     {
         if ($value == $_GET['remove']) {
+
             unset($_SESSION['cart'][$key]);
-            array_search($_GET['id'], $_SESSION['cart']);
-            header("Location: cart.php");
+
         }
-        
+
+        sort($_SESSION['cart']);
+        header("Location: cart.php"); 
+
     }
-        
 };
 
 $sql = 
@@ -28,22 +31,6 @@ $stmt = $conn->prepare($sql);
 $res = $stmt->execute($_SESSION['cart']);
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $rows = $stmt->fetchAll();
-
-
-// if(isset($_GET['id'])) {
-//     array_push($_SESSION['cart']);
-//     header("Location: cart.php");
-// };
-
-// $sql = 
-//     'SELECT * FROM products 
-//     WHERE id IN (' . implode(',', array_fill(0, count($_SESSION['cart']), '?')) . ')';
-
-// $stmt = $conn->prepare($sql);
-
-// $res = $stmt->execute($_SESSION['cart']);
-// $stmt->setFetchMode(PDO::FETCH_ASSOC);
-// $rows = $stmt->fetchAll();
 
 ?>
 <!DOCTYPE html>
@@ -86,7 +73,7 @@ $rows = $stmt->fetchAll();
         <form>
 
             <input type="text" name="name" value="" placeholder="<?= trans('Name') ?>"> <br />
-            <input type="text" name="contactDetails" value="" placeholder="<?= trans('Contact Details') ?>"> <br />
+            <textarea rows="2" cols="50" name="contactDetails" placeholder="<?= trans('Contact Details') ?>"></textarea> <br />
             <textarea rows="4" cols="50" name="comments" value="" placeholder="<?= trans('Comment') ?>"></textarea> <br />
             <input type="submit" name="submit">   
 
