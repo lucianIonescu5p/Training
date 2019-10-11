@@ -32,6 +32,64 @@ $res = $stmt->execute($_SESSION['cart']);
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $rows = $stmt->fetchAll();
 
+//form checkout
+$name = $contactDetails = $comments = "";
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') 
+{
+   
+    $name = test_input($_POST['name']);
+    $contactDetails = test_input($_POST['contactDetails']);
+    $comments = test_input($_POST['comments']);
+
+}
+
+//mail 
+if(isset($_POST['checkout']))
+{
+
+    $to = SHOPMANAGER;
+    $subject = "Your order sir!";
+    $headers = "MIME-Version: 1.0" . "\r\n";
+    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+    $headers .= 'From: <webmaster@example.com>' . "\r\n";
+
+    $message = "
+        <html>
+            <head>
+                <title>Order</title>
+            </head>
+            <body>
+
+                <p>Hello " . $name . "</p>
+                <p>Your order details are:</p>
+
+                <table border='1' cellpadding='3'>
+
+            <tr>
+                <th align=\"middle\"> Name </th>
+                <th align=\"middle\"> Description </th>
+                <th align=\"middle\"> Price </th>
+
+            </tr> ";
+
+             foreach($rows as $row){
+                $message .= " <tr>
+                                <td align=\"middle\">" . $row['title'] . "</td>
+                                <td align=\"middle\">" . $row['description'] . "</td>
+                                <td align=\"middle\">" . $row['price'] . "</td>
+                            </tr> ";
+             }
+                $message .= " </table>
+                <p> Your Contact details are: " . $contactDetails . "</p>
+                <p> Additional message: " . $comments . "</p>
+            </body>
+        </html> ";
+
+    mail($to, $subject, $message, $headers);
+    header("Location: cart.php?mailsent");
+
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,16 +127,18 @@ $rows = $stmt->fetchAll();
             <?php endforeach; ?>
 
         </table>
-        
-        <form>
+    </div>
+        <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 
-            <input type="text" name="name" value="" placeholder="<?= trans('Name') ?>"> <br />
-            <textarea rows="2" cols="50" name="contactDetails" placeholder="<?= trans('Contact Details') ?>"></textarea> <br />
-            <textarea rows="4" cols="50" name="comments" value="" placeholder="<?= trans('Comment') ?>"></textarea> <br />
-            <input type="submit" name="submit">   
+            <input id="nameInput" type="text" name="name" value="<?= $name; ?>" placeholder="<?= trans('Name ') ?>"><br />
+            <textarea rows="2" cols="50" name="contactDetails" placeholder="<?= trans('Contact Details') ?>"><?= $contactDetails; ?></textarea> <br />
+            <textarea rows="4" cols="50" name="comments" value="" placeholder="<?= trans('Comment') ?>"><?= $comments; ?></textarea> <br />
+            <input type="submit" name="checkout" value="<?= trans('Checkout') ?>">   
 
         </form>
-    </div>
+
+    
+
     <div class="cartLink">
         <a href="index.php" class="cartBtn"><?= trans('Back to index') ?></a>
     </div>

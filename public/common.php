@@ -13,4 +13,11 @@ function trans($label)
     ];
 
     return isset($translations[$label]) ? $translations[$label] : $label;
-}
+};
+
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+  }
