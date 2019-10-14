@@ -16,22 +16,48 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top:20px;
 
 }
 
-.cartLink{
-
-    background-color: whitesmoke;
-    border-radius: 10px;
-    padding: 10px;
-    margin-top: 2px;  
-
-}
-
-.cartBtn{
+#cartLink{
 
     text-decoration: none;
+    font-size: 20px;
     font-weight: 700;
-    color: #575757;
+    color: goldenrod;
+    padding: 10px 15px 10px 15px;
+    border: 1px;
+    border-radius: 10px;
+    background-color: purple; 
 
+}
+#cartLink:hover{
+    color: purple;
+    background-color: goldenrod;
+}
+#cartWrapper{
+    margin-top:15px;
+}
+
+#login{
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 700;
+    color: goldenrod;
+    padding: 10px 15px 10px 15px;
+    border: 1px;
+    border-radius: 10px;
+    background-color: purple;
+}
+#login:hover{
+    color: purple;
+    background-color: goldenrod;
+}
+#loginWrapper{
+    margin-top:10px;
+}
+
+.error{
+    color: red;
 }

@@ -37,6 +37,9 @@ $rows = $stmt->fetchAll();
 </head>
 <body>
 
+    <div id="loginWrapper">
+        <a id="login" href="login.php">Log in</a>
+    </div>
     <div id="container">
 
         <div id="table">
@@ -62,8 +65,8 @@ $rows = $stmt->fetchAll();
             </table>  
         </div>
 
-        <div class="cartLink">
-            <a href="cart.php" class="cartBtn"><?= trans('Go to cart') ?></a>
+        <div id="cartWrapper">
+            <a id="cartLink" href="cart.php" class="cartBtn"><?= trans('Go to cart') ?></a>
         </div>
 
     </div>

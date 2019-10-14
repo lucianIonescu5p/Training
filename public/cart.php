@@ -34,12 +34,31 @@ $rows = $stmt->fetchAll();
 
 //form checkout
 $name = $contactDetails = $comments = "";
+$nameErr = $contactDetailsErr = "";
 
+//validation
 if ($_SERVER['REQUEST_METHOD'] == 'POST') 
 {
-   
-    $name = test_input($_POST['name']);
-    $contactDetails = test_input($_POST['contactDetails']);
+    if(empty($_POST['name'])){
+
+        $nameErr = trans('Name is required');
+
+    } else {
+
+        $name = test_input($_POST['name']);
+
+    }
+
+    if(empty($_POST['contactDetails'])){
+
+        $contactDetailsErr = trans('E-mail is required');
+
+    } else {
+
+        $contactDetails = test_input($_POST['contactDetails']);
+
+    }
+
     $comments = test_input($_POST['comments']);
 
 }
@@ -47,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 //mail 
 if(isset($_POST['checkout']))
 {
+    if(!empty($_POST['name']) && !empty($_POST['contactDetails'])){
 
     $to = SHOPMANAGER;
     $subject = "Your order sir!";
@@ -88,6 +108,8 @@ if(isset($_POST['checkout']))
 
     mail($to, $subject, $message, $headers);
     header("Location: cart.php?mailsent");
+}
+
 
 }
 ?>
@@ -132,8 +154,8 @@ if(isset($_POST['checkout']))
     </div>
         <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 
-            <input id="nameInput" type="text" name="name" value="<?= $name; ?>" placeholder="<?= trans('Name ') ?>"><br />
-            <textarea rows="2" cols="50" name="contactDetails" placeholder="<?= trans('Contact Details') ?>"><?= $contactDetails; ?></textarea> <br />
+            <input id="nameInput" type="text" name="name" value="<?= $name; ?>" placeholder="<?= trans('Name ') ?>"><span class="error"> *<?= $nameErr; ?></span><br />
+            <input type="email" name="contactDetails" placeholder="<?= trans('Email Address') ?>"><?= $contactDetails; ?><span class="error"> *<?= $contactDetailsErr; ?></span> <br />
             <textarea rows="4" cols="50" name="comments" value="" placeholder="<?= trans('Comment') ?>"><?= $comments; ?></textarea> <br />
             <input type="submit" name="checkout" value="<?= trans('Checkout') ?>">   
 
@@ -141,8 +163,8 @@ if(isset($_POST['checkout']))
 
     
 
-    <div class="cartLink">
-        <a href="index.php" class="cartBtn"><?= trans('Back to index') ?></a>
+    <div id="cartWrapper">
+        <a id="cartLink" href="index.php" class="cartBtn"><?= trans('Back to index') ?></a>
     </div>
    
 </body>
