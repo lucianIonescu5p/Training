@@ -51,7 +51,7 @@ $rows = $stmt->fetchAll();
 
                 <?php foreach($rows as $row): ?>
                     <tr>
-                        <td align="middle"><?= $row['id'] ?></td>
+                        <td align="middle"><img src="images/<?= $row['id'] ?>.jpg" width="70px" height="70px"></td>
                         <td align="middle"><?= $row['title'] ?></td>
                         <td align="middle"><?= $row['description'] ?></td>
                         <td align="middle"><?= $row['price'] ?></td>

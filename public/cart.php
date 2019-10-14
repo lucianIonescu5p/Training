@@ -82,7 +82,7 @@ if(isset($_POST['checkout']))
              }
                 $message .= " </table>
                 <p> Your Contact details are: " . $contactDetails . "</p>
-                <p> Additional message: " . $comments . "</p>
+                <p> Additional messages: " . $comments . "</p>
             </body>
         </html> ";
 
@@ -109,6 +109,7 @@ if(isset($_POST['checkout']))
         <table border="1" cellpadding="3">
 
             <tr>
+                <th align="middle"><?= trans('Product') ?></th>
                 <th align="middle"><?= trans('Name') ?></th>
                 <th align="middle"><?= trans('Description') ?></th>
                 <th align="middle"><?= trans('Price') ?></th>
@@ -118,6 +119,7 @@ if(isset($_POST['checkout']))
             <?php foreach($rows as $row): ?>
 
                 <tr>
+                    <td align="middle"><img src="images/<?= $row['id'] ?>.jpg" width="70px" height="70px"></td>
                     <td align="middle"><?= $row['title'] ?></td>
                     <td align="middle"><?= $row['description'] ?></td>
                     <td align="middle"><?= $row['price'] ?></td>
