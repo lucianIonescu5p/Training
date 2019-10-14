@@ -157,7 +157,7 @@ if(isset($_POST['checkout']))
             <input id="nameInput" type="text" name="name" value="<?= $name; ?>" placeholder="<?= trans('Name ') ?>"><span class="error"> *<?= $nameErr; ?></span><br />
             <input type="email" name="contactDetails" placeholder="<?= trans('Email Address') ?>"><?= $contactDetails; ?><span class="error"> *<?= $contactDetailsErr; ?></span> <br />
             <textarea rows="4" cols="50" name="comments" value="" placeholder="<?= trans('Comment') ?>"><?= $comments; ?></textarea> <br />
-            <input type="submit" name="checkout" value="<?= trans('Checkout') ?>">   
+            <input type="submit" name="checkout" value="<?= trans('Checkout') ?>">    
 
         </form>
 

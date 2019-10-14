@@ -32,7 +32,7 @@ $rows = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?= trans('Shop 1') ?></title>
+    <title><?= trans('Shop 1'); ?></title>
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
@@ -45,11 +45,11 @@ $rows = $stmt->fetchAll();
         <div id="table">
             <table border="1" cellpadding="3">
                 <tr>
-                    <th align="middle"><?= trans('ID') ?></th>
-                    <th align="middle"><?= trans('Title') ?></th>
-                    <th align="middle"><?= trans('Description') ?></th>
-                    <th align="middle"><?= trans('Price') ?></th>
-                    <th align="middle"><?= trans('Add') ?></th>
+                    <th align="middle"><?= trans('ID'); ?></th>
+                    <th align="middle"><?= trans('Title'); ?></th>
+                    <th align="middle"><?= trans('Description'); ?></th>
+                    <th align="middle"><?= trans('Price'); ?></th>
+                    <th align="middle"><?= trans('Add'); ?></th>
                 </tr>
 
                 <?php foreach($rows as $row): ?>
@@ -58,7 +58,7 @@ $rows = $stmt->fetchAll();
                         <td align="middle"><?= $row['title'] ?></td>
                         <td align="middle"><?= $row['description'] ?></td>
                         <td align="middle"><?= $row['price'] ?></td>
-                        <td align="middle"><a href="?id=<?= $row['id']?>"><?= trans('Add Item') ?></a></td>
+                        <td align="middle"><a href="?id=<?= $row['id']?>"><?= trans('Add Item'); ?></a></td>
                     </tr>
                 <?php endforeach; ?>  
 
@@ -66,7 +66,7 @@ $rows = $stmt->fetchAll();
         </div>
 
         <div id="cartWrapper">
-            <a id="cartLink" href="cart.php" class="cartBtn"><?= trans('Go to cart') ?></a>
+            <a id="cartLink" href="cart.php"><?= trans('Go to cart'); ?></a>
         </div>
 
     </div>
