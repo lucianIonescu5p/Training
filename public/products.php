@@ -18,6 +18,7 @@ if ($_SESSION['authenticated'] != 1) {
 
 }
 
+//Log out
 if(isset($_GET['logOut'])){
 
     $_SESSION['authenticated'] = 0;
@@ -25,6 +26,15 @@ if(isset($_GET['logOut'])){
 
 }
 
+//Delete item
+if(isset($_GET['delete'])){
+
+    $deleteSql = 'DELETE FROM products WHERE id=' . $_GET['delete'] . '';
+    $stmt = $conn->prepare($deleteSql);
+    $stmt->execute();
+    header('Location: products.php');
+    
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -5,7 +5,9 @@ require_once 'config.php';
 
 $conn = new PDO("mysql:host=".SERVERNAME.";dbname=".DBNAME."", USERNAME, PASSWORD);
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
+//translation function
 function trans($label) 
 {
     $translations = [
@@ -15,6 +17,7 @@ function trans($label)
     return isset($translations[$label]) ? $translations[$label] : $label;
 };
 
+//data test function
 function test_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
