@@ -51,28 +51,32 @@ if(isset($_POST['submit']))
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?= trans('Login Shop 1') ?></title>
-    <link rel="stylesheet" href="main.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title><?= trans('Login Shop 1') ?></title>
+        <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
 
-    <div id="container">
+        <div id="container">
 
-        <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>" align = "left">
+            <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>" align = "left">
 
-            <label for="username"><?= trans('Master username: ') ?></label><br />
-            <input type="text" name="username" value="<?= $name; ?>"><br /><span class="error"> <?= $nameErr; ?></span> <br /><br />
-            <label for="password"><?= trans('Master passcode: ') ?></label><br />
-            <input type="password" name="password"><br /><span class="error"> <?= $passwordErr; ?></span> <br /><br />
-            <input type="submit" name="submit" value="Log in">
+                <label for="username"><?= trans('Master username: ') ?></label><br />
+                <input type="text" name="username" value="<?= $name; ?>"><br />
+                    <span class="error"> <?= $nameErr; ?></span> <br /><br />
 
-        </form>
+                <label for="password"><?= trans('Master passcode: ') ?></label><br />
+                <input type="password" name="password"><br />
+                    <span class="error"> <?= $passwordErr; ?></span> <br /><br />
+                    
+                <input type="submit" name="submit" value="Log in">
 
-    </div>
+            </form>
 
-</body>
+        </div>
+
+    </body>
 </html>

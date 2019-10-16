@@ -4,10 +4,10 @@ require_once 'common.php';
 
 if ($_SESSION['authenticated'] != 1) {
 
-    echo "You need to be a god to enter this page";
+    echo trans("You need to be a god to enter this page");
     die();
 
-} elseif($_SESSION['authenticated'] == 1){
+} elseif ($_SESSION['authenticated'] == 1) {
 
     $sql = 'SELECT * FROM products';
 
@@ -19,21 +19,32 @@ if ($_SESSION['authenticated'] != 1) {
 }
 
 //Log out
-if(isset($_GET['logOut'])){
+if (isset($_GET['logOut'])) {
 
     $_SESSION['authenticated'] = 0;
     header("Location: index.php");
+    die();
 
 }
 
-//Delete item
-if(isset($_GET['delete'])){
+//Delete product
+if (isset($_GET['delete'])) {
 
     $deleteSql = 'DELETE FROM products WHERE id=' . $_GET['delete'] . '';
     $stmt = $conn->prepare($deleteSql);
     $stmt->execute();
-    header('Location: products.php');
+    header("Location: products.php");
     
+}
+
+//Edit product
+if (isset($_GET['edit'])) {
+
+    $_SESSION['edit'] = true;
+    $_SESSION['id'] = $row['id'];
+
+
+    header("Location: product.php?edit=" . $_SESSION['id']);
 }
 ?>
 <!DOCTYPE html>

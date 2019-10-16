@@ -1,96 +1,116 @@
 <?php
 
 require_once 'common.php';
-$title = $description = "";
-$price = 0;
 
-$titleErr = $descriptionErr = "";
-$priceErr = "";
+if ($_SESSION['authenticated'] != 1) {
 
-//data validation
-if ($_SERVER['REQUEST_METHOD'] == 'POST')
-{
+    echo trans("You need to be a god to enter this page");
+    die();
 
-    if (empty($_POST['title'])){
+} elseif ($_SESSION['authenticated'] == 1) {
 
-        $titleErr = trans("Please insert a title");
+    $title = $description = $image = "";
+    $price = null;
 
-    } else {
+    $titleErr = $descriptionErr = $priceErr = "";
 
-        $title = $_POST['title'];
+    //data validation
+    if ($_SERVER['REQUEST_METHOD'] == 'POST')
+    {
 
-        if (!preg_match("/^[A-Za-z0-9 ]*$/", $title)) {
-            $titleErr = trans("Only letters, numbers and white space allowed");
-          };
+        if (empty($_POST['title'])) {
+
+            $titleErr = trans("Please insert a title");
+
+        } else {
+
+            $title = test_input($_POST['title']);
+
+        };
+
+        if (empty($_POST['description'])) {
+
+            $descriptionErr = trans("Please insert a description");
+
+        } else {
+
+            $description = test_input($_POST['description']);
+
+        };
+
+        if (empty($_POST['price'])) {
+
+            $priceErr = trans("Please specify a 'real' price");
+
+        } else {
+    
+            $price = test_input($_POST['price']);
+
+        }
+    }
+
+    //Insert new product
+    if (isset($_POST['submit']) && $title != "" && $description != "" && $price != "") {
+
+        $sql = 'INSERT INTO products(title, description, price, image) 
+        VALUES (:title, :description, :price, :image)';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array('title' => $title, 'description' => $description, 'price' => $price, 'image' => $image));
+        echo 'Inserted';
 
     }
 
-    if(empty($_POST['description'])){
+    //Update product
+    if (isset($_POST['update'])) {
 
-        $descriptionErr = trans("Please insert a description");
-
-    } else {
-
-        $description = $_POST['description'];
-
-        if (!preg_match("/^[A-Za-z0-9 ]*$/",$description)) {
-            $descriptionErr = trans("Only letters, numbers and white space allowed");
-          };
+        $sql = 'UPDATE products SET title = ' . $title . ', description = ' . $description . ', price = ' . $price . ' WHERE id = ' . $id . '';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
 
     }
 
-    if($price == 0){
+    //Return to products.php
+    if (isset($_GET['products'])) {
 
-        $priceErr = trans("Please specify a 'real' price");
-
-    } else {
-
-        $price = $_POST['price'];
+        $_SESSION['edit'] = false;
+        header("Location: products.php");
 
     }
 }
-
-//Insert new product
-if(isset($_POST['submit'])){
-
-    $sql = 'INSERT INTO products(title, description, price) 
-    VALUES (:title, :description, :price)';
-
-$stmt = $conn->prepare($sql);
-$stmt->setFetchMode(PDO::FETCH_ASSOC);
-$stmt->execute(array('title' => $title, 'description' => $description, 'price' => $price));
-echo 'Inserted';
-
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?= trans("Product"); ?></title>
-    <link rel="stylesheet" href="main.css">
-</head>
-<body>
-    
-    <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title><?= trans("Product"); ?></title>
+        <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
+        
+        <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">
 
-        <input type="text" name="title" value="<?= test_input($title) ?>" placeholder="<?= trans('Insert product title'); ?>">
-            <span class="error"> <?= $titleErr; ?></span><br />
-        <input type="text" name="description" value="<?= test_input($description) ?>" placeholder="<?= trans('Insert product description'); ?>">
-            <span class="error"> <?= $descriptionErr; ?></span><br />
-        <input type="number" name="price" value="<?= test_input($price) ?>" placeholder="<?= trans('Insert product price'); ?>">
-            <span class="error"> <?= $priceErr; ?></span><br />
-        <input type="file" name="image" placeholder="<?= trans('Insert product image'); ?>"><br />
-        <input type="submit" name="submit" value="<?= trans("Add product"); ?>">
+            <input type="text" name="title" value="<?= test_input($title) ?>" placeholder="<?= trans('Insert product title'); ?>">
+                <span class="error"> <?= $titleErr; ?></span><br />
+            <input type="text" name="description" value="<?= test_input($description) ?>" placeholder="<?= trans('Insert product description'); ?>">
+                <span class="error"> <?= $descriptionErr; ?></span><br />
+            <input type="number" name="price" value="<?= test_input($price) ?>" placeholder="<?= trans('Insert product price'); ?>">
+                <span class="error"> <?= $priceErr; ?></span><br />
+            <input type="file" name="image" placeholder="<?= trans('Insert product image'); ?>"><br />
 
-    </form>
+            <?php if($_SESSION['edit']): ?>
+                <input type="submit" name="update" value="<?= trans("Update product"); ?>">
+            <?php else: ?>
+                <input type="submit" name="submit" value="<?= trans("Add product"); ?>">
+            <?php endif; ?>
+            
+        </form>
 
-    <br />
+        <br />
 
-    <a id="cartLink" href="products.php" class="cartBtn"><?= trans('Products') ?></a>
+        <a id="cartLink" href="?products" class="cartBtn"><?= trans('Products') ?></a>
 
-</body>
+    </body>
 </html>

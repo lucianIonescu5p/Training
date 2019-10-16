@@ -30,9 +30,10 @@ body {
     border: 1px;
     border-radius: 10px;
     background-color: purple; 
-
+  
 }
 #cartLink:hover{
+
     color: purple;
     background-color: goldenrod;
 }
