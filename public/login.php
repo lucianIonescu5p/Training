@@ -2,8 +2,8 @@
 
 require_once 'common.php';
 
-$name = $password = "";
-$nameErr = $passwordErr = "";
+$name = $password = '';
+$nameErr = $passwordErr = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
     } elseif (empty($_POST['username'])){
 
-        $nameErr = trans("Master username is required");
+        $nameErr = trans('Master username is required');
 
     } elseif ($_POST['username'] != ADMINNAME) {
 
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
     } elseif (empty($_POST['password'])){
         
-        $passwordErr = trans("Master passcode is required");
+        $passwordErr = trans('Master passcode is required');
 
     } elseif ($_POST['password'] != ADMINPASS) {
 
@@ -43,7 +43,7 @@ if(isset($_POST['submit']))
     if($_POST['username'] === ADMINNAME and $_POST['password'] === ADMINPASS){
 
         $_SESSION['authenticated'] = true;
-        header("Location: products.php");
+        header('Location: products.php');
 
     }
 
@@ -71,7 +71,7 @@ if(isset($_POST['submit']))
                 <label for="password"><?= trans('Master passcode: ') ?></label><br />
                 <input type="password" name="password"><br />
                     <span class="error"> <?= $passwordErr; ?></span> <br /><br />
-                    
+
                 <input type="submit" name="submit" value="Log in">
 
             </form>

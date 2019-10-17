@@ -10,6 +10,7 @@ if (empty($_SESSION['cart'])) {
 if (isset($_GET['id'])) {
     array_push($_SESSION['cart'], $_GET['id']);
     header("Location: index.php");
+    die();
 };
    
 $sql = 
@@ -25,6 +26,14 @@ $res = $stmt->execute($_SESSION['cart']);
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $rows = $stmt->fetchAll();
 
+if (isset($_GET['logOut'])) {
+
+    unset($_SESSION['authenticated']);
+    header("Location: index.php");
+    die();
+    
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,7 +47,11 @@ $rows = $stmt->fetchAll();
     <body>
 
         <div id="loginWrapper">
-            <a id="login" href="login.php">Log in</a>
+            <?php if(isset($_SESSION['authenticated']) && $_SESSION['authenticated'] == 1): ?>
+            <a id="login" href="index.php?logOut"><?= trans('Log out') ?></a>
+            <?php elseif(!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] == 0): ?>
+            <a id="login" href="login.php"><?= trans('Log in') ?></a>
+            <?php endif; ?>
         </div>
         <div id="container">
 
@@ -54,7 +67,7 @@ $rows = $stmt->fetchAll();
 
                     <?php foreach($rows as $row): ?>
                         <tr>
-                            <td align="middle"><img src="images/<?= $row['id'] ?>.jpg" width="70px" height="70px"></td>
+                            <td align="middle"><img src="images/<?= $row['image'] ?>" width="70px" height="70px"></td>
                             <td align="middle"><?= $row['title'] ?></td>
                             <td align="middle"><?= $row['description'] ?></td>
                             <td align="middle"><?= $row['price'] ?></td>

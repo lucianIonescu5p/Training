@@ -4,15 +4,15 @@ require_once 'common.php';
 
 if ($_SESSION['authenticated'] != 1) {
 
-    echo trans("You need to be a god to enter this page");
+    echo trans('You need to be a god to enter this page');
     die();
 
 } elseif ($_SESSION['authenticated'] == 1) {
 
-    $title = $description = $image = "";
+    $title = $description = $image = '';
     $price = null;
 
-    $titleErr = $descriptionErr = $priceErr = "";
+    $titleErr = $descriptionErr = $priceErr = '';
 
     //data validation
     if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -20,7 +20,7 @@ if ($_SESSION['authenticated'] != 1) {
 
         if (empty($_POST['title'])) {
 
-            $titleErr = trans("Please insert a title");
+            $titleErr = trans('Please insert a title');
 
         } else {
 
@@ -30,7 +30,7 @@ if ($_SESSION['authenticated'] != 1) {
 
         if (empty($_POST['description'])) {
 
-            $descriptionErr = trans("Please insert a description");
+            $descriptionErr = trans('Please insert a description');
 
         } else {
 
@@ -40,7 +40,11 @@ if ($_SESSION['authenticated'] != 1) {
 
         if (empty($_POST['price'])) {
 
-            $priceErr = trans("Please specify a 'real' price");
+            $priceErr = trans('Please specify a \'real\' price');
+
+        } elseif ($_POST['price'] < 0) {
+
+            $priceErr = "Please enter a positive integer value.";
 
         } else {
     
@@ -50,7 +54,7 @@ if ($_SESSION['authenticated'] != 1) {
     }
 
     //Insert new product
-    if (isset($_POST['submit']) && $title != "" && $description != "" && $price != "") {
+    if (isset($_POST['submit']) && $title != '' && $description != '' && $price != '') {
 
         $sql = 'INSERT INTO products(title, description, price, image) 
         VALUES (:title, :description, :price, :image)';
@@ -74,7 +78,8 @@ if ($_SESSION['authenticated'] != 1) {
     if (isset($_GET['products'])) {
 
         $_SESSION['edit'] = false;
-        header("Location: products.php");
+        header('Location: products.php');
+        die();
 
     }
 }
