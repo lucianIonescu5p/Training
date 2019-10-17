@@ -3,29 +3,37 @@
 require_once 'common.php';
 
 if (empty($_SESSION['cart'])) {
-    $_SESSION['cart'] = array(0);
+
+    $_SESSION['cart'] = array();
+    $empty = "Cart is empty";
+
 } 
 
 //remove items from the cart
-if (isset($_GET['remove'])) 
+if (isset($_GET['id'])) 
 {
-    foreach ($_SESSION['cart'] as $key => $value) 
+    foreach ($_SESSION['cart'] as $value) 
     {
-        if ($value == $_GET['remove']) {
 
-            unset($_SESSION['cart'][$key]);
-
+        if (array_search($_GET['id'], $_SESSION['cart'])) {
+            
+            unset($_SESSION['cart'][$value]);
+            
         }
-
+        
         sort($_SESSION['cart']);
         header("Location: cart.php"); 
-
+        
     }
 };
-
+print_r(array_keys($_SESSION['cart'])); 
 $sql = 
-'SELECT * FROM products 
-WHERE id IN (' . implode(',', array_fill(0, count($_SESSION['cart']), '?')) . ')';
+'SELECT * FROM products' . (      
+    count($_SESSION['cart']) ?
+        ' WHERE id 
+        IN (' . implode(',', array_fill(0, count($_SESSION['cart']), '?')) . ')' :
+        ''
+    );
 
 $stmt = $conn->prepare($sql);
 $res = $stmt->execute($_SESSION['cart']);
@@ -45,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
     } else {
 
-        $name = test_input($_POST['name']);
+        $name = sanitize_input($_POST['name']);
 
     }
 
@@ -55,11 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
     } else {
 
-        $contactDetails = test_input($_POST['contactDetails']);
+        $contactDetails = sanitize_input($_POST['contactDetails']);
 
     }
 
-    $comments = test_input($_POST['comments']);
+    $comments = sanitize_input($_POST['comments']);
 
 }
 
@@ -81,7 +89,7 @@ if (isset($_POST['checkout']))
                 </head>
                 <body>
 
-                    <p>Hello " . $name . "</p>
+                    <p>Hello " . htmlspecialchars($name) . "</p>
                     <p>Your order details are:</p>
 
                     <table border='1' cellpadding='3'>
@@ -101,8 +109,8 @@ if (isset($_POST['checkout']))
                                 </tr> ";
                 }
                     $message .= " </table>
-                    <p> Your Contact details are: " . $contactDetails . "</p>
-                    <p> Additional messages: " . $comments . "</p>
+                    <p> Your Contact details are: " . htmlspecialchars($contactDetails) . "</p>
+                    <p> Additional messages: " . htmlspecialchars($comments) . "</p>
                 </body>
             </html> ";
 
@@ -145,7 +153,7 @@ if (isset($_POST['checkout']))
                     <td align="middle"><?= $row['title'] ?></td>
                     <td align="middle"><?= $row['description'] ?></td>
                     <td align="middle"><?= $row['price'] ?></td>
-                    <td align="middle"><a href="?remove=<?= $row['id']?>"><?= trans('Remove') ?></a></td>
+                    <td align="middle"><a href="?id=<?= $row['id']?>"><?= trans('Remove') ?></a></td>
                 </tr>
 
             <?php endforeach; ?>

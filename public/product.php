@@ -24,7 +24,7 @@ if ($_SESSION['authenticated'] != 1) {
 
         } else {
 
-            $title = test_input($_POST['title']);
+            $title = sanitize_input($_POST['title']);
 
         };
 
@@ -34,7 +34,7 @@ if ($_SESSION['authenticated'] != 1) {
 
         } else {
 
-            $description = test_input($_POST['description']);
+            $description = sanitize_input($_POST['description']);
 
         };
 
@@ -48,7 +48,7 @@ if ($_SESSION['authenticated'] != 1) {
 
         } else {
     
-            $price = test_input($_POST['price']);
+            $price = sanitize_input($_POST['price']);
 
         }
     }
@@ -97,11 +97,11 @@ if ($_SESSION['authenticated'] != 1) {
         
         <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">
 
-            <input type="text" name="title" value="<?= test_input($title) ?>" placeholder="<?= trans('Insert product title'); ?>">
+            <input type="text" name="title" value="<?= sanitize_input($title) ?>" placeholder="<?= trans('Insert product title'); ?>">
                 <span class="error"> <?= $titleErr; ?></span><br />
-            <input type="text" name="description" value="<?= test_input($description) ?>" placeholder="<?= trans('Insert product description'); ?>">
+            <input type="text" name="description" value="<?= sanitize_input($description) ?>" placeholder="<?= trans('Insert product description'); ?>">
                 <span class="error"> <?= $descriptionErr; ?></span><br />
-            <input type="number" name="price" value="<?= test_input($price) ?>" placeholder="<?= trans('Insert product price'); ?>">
+            <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= trans('Insert product price'); ?>">
                 <span class="error"> <?= $priceErr; ?></span><br />
             <input type="file" name="image" placeholder="<?= trans('Insert product image'); ?>"><br />
 
