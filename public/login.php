@@ -12,11 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
         $name = ADMINNAME;
 
-    } elseif (empty($_POST['username'])){
-
-        $nameErr = trans('Master username is required');
-
-    } elseif ($_POST['username'] != ADMINNAME) {
+    } elseif ($_POST['username'] != $name) {
 
         $nameErr = trans('This is not the master username');
 
@@ -26,26 +22,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
         $password = ADMINPASS;
 
-    } elseif (empty($_POST['password'])){
-        
-        $passwordErr = trans('Master passcode is required');
-
-    } elseif ($_POST['password'] != ADMINPASS) {
+    } elseif ($_POST['password'] != $password) {
 
         $passwordErr = trans('This is not the master password');
 
     }
 }
 
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) && !empty($name) && !empty($password))
 {
 
-    if($_POST['username'] === ADMINNAME and $_POST['password'] === ADMINPASS){
-
-        $_SESSION['authenticated'] = true;
-        header('Location: products.php');
-
-    }
+    $_SESSION['authenticated'] = true;
+    header('Location: products.php');
 
 }
 ?>
@@ -62,15 +50,15 @@ if(isset($_POST['submit']))
 
         <div id="container">
 
-            <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>" align = "left">
+            <form method="POST" align = "left">
 
                 <label for="username"><?= trans('Master username: ') ?></label><br />
                 <input type="text" name="username" value="<?= $name; ?>"><br />
-                    <span class="error"> <?= $nameErr; ?></span> <br /><br />
+                <span class="error"> <?= $nameErr; ?></span> <br /><br />
 
                 <label for="password"><?= trans('Master passcode: ') ?></label><br />
                 <input type="password" name="password"><br />
-                    <span class="error"> <?= $passwordErr; ?></span> <br /><br />
+                <span class="error"> <?= $passwordErr; ?></span> <br /><br />
 
                 <input type="submit" name="submit" value="Log in">
 

@@ -66,3 +66,7 @@ body {
 #productsBtn{
     margin-top: 20px;
 }
+
+#mailSent{
+    color: green;
+}

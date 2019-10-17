@@ -95,14 +95,14 @@ if ($_SESSION['authenticated'] != 1) {
     </head>
     <body>
         
-        <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data">
 
             <input type="text" name="title" value="<?= sanitize_input($title) ?>" placeholder="<?= trans('Insert product title'); ?>">
-                <span class="error"> <?= $titleErr; ?></span><br />
+            <span class="error"> <?= $titleErr; ?></span><br />
             <input type="text" name="description" value="<?= sanitize_input($description) ?>" placeholder="<?= trans('Insert product description'); ?>">
-                <span class="error"> <?= $descriptionErr; ?></span><br />
+            <span class="error"> <?= $descriptionErr; ?></span><br />
             <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= trans('Insert product price'); ?>">
-                <span class="error"> <?= $priceErr; ?></span><br />
+            <span class="error"> <?= $priceErr; ?></span><br />
             <input type="file" name="image" placeholder="<?= trans('Insert product image'); ?>"><br />
 
             <?php if($_SESSION['edit']): ?>

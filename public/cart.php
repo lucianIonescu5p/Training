@@ -5,28 +5,32 @@ require_once 'common.php';
 if (empty($_SESSION['cart'])) {
 
     $_SESSION['cart'] = array();
-    $empty = "Cart is empty";
 
 } 
+
+$empty = trans('Cart is empty');
 
 //remove items from the cart
 if (isset($_GET['id'])) 
 {
-    foreach ($_SESSION['cart'] as $value) 
-    {
 
-        if (array_search($_GET['id'], $_SESSION['cart'])) {
-            
-            unset($_SESSION['cart'][$value]);
-            
-        }
-        
-        sort($_SESSION['cart']);
+    $key = array_search($_GET['id'], $_SESSION['cart']);  
+
+    if($key !== false){
+
+        unset($_SESSION['cart'][$key]);  
+        // sort($_SESSION['cart']);
         header("Location: cart.php"); 
-        
+
+    } else {
+
+        header("Location: cart.php"); 
+
     }
+
+
 };
-print_r(array_keys($_SESSION['cart'])); 
+print_r($_SESSION['cart']);
 $sql = 
 'SELECT * FROM products' . (      
     count($_SESSION['cart']) ?
@@ -72,52 +76,58 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 }
 
 //mail 
-if (isset($_POST['checkout']))
+if (isset($_POST['checkout']) && !empty($name) && !empty($contactDetails) && !empty($_SESSION['cart']))
 {
-    if (!empty($_POST['name']) && !empty($_POST['contactDetails'])) {
 
         $to = SHOPMANAGER;
-        $subject = "Your order sir!";
+        $subject = trans("New order!");
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $headers .= 'From: <webmaster@example.com>' . "\r\n";
+        $headers .= "From: <" . trans($name) . "@example.com>" . "\r\n";
 
         $message = "
             <html>
                 <head>
-                    <title>Order</title>
+                    <title>" . trans('Order') . "</title>
                 </head>
                 <body>
 
-                    <p>Hello " . htmlspecialchars($name) . "</p>
-                    <p>Your order details are:</p>
+                    <p>" . trans('Hello, here\'s an order from') . " " . htmlspecialchars($name) . "</p>
+                    <p>" . trans('Order details are:') . "</p>
 
                     <table border='1' cellpadding='3'>
 
                 <tr>
-                    <th align=\"middle\"> Name </th>
-                    <th align=\"middle\"> Description </th>
-                    <th align=\"middle\"> Price </th>
+                    <th align=\"middle\">" . trans('Product') . " </th>
+                    <th align=\"middle\">" . trans('Name') . " </th>
+                    <th align=\"middle\">" . trans('Description') . " </th>
+                    <th align=\"middle\">" . trans('Price') . " </th>
 
                 </tr> ";
 
                 foreach ($rows as $row) {
                     $message .= " <tr>
+                                    <td align=\"middle\">" . $row['image'] . "</td>
                                     <td align=\"middle\">" . $row['title'] . "</td>
                                     <td align=\"middle\">" . $row['description'] . "</td>
                                     <td align=\"middle\">" . $row['price'] . "</td>
                                 </tr> ";
                 }
                     $message .= " </table>
-                    <p> Your Contact details are: " . htmlspecialchars($contactDetails) . "</p>
-                    <p> Additional messages: " . htmlspecialchars($comments) . "</p>
+                    <p> " . trans('Contact details:') . " " . htmlspecialchars($contactDetails) . "</p>
+                    <p> " . trans('Additional messages:') . " " . htmlspecialchars($comments) . "</p>
                 </body>
             </html> ";
 
         mail($to, $subject, $message, $headers);
         header("Location: cart.php?mailsent");
-    }
+        
+}
 
+if(isset($_GET['mailsent'])){
+
+    $checkoutMessage = trans("Your order was sent succesfully");
+    $_SESSION['cart'] = array();
 
 }
 ?>
@@ -145,7 +155,11 @@ if (isset($_POST['checkout']))
                 <th align="middle"><?= trans('Price') ?></th>
                 <th align="middle"><?= trans('Remove from cart') ?></th>
             </tr>
-
+            <?php if(empty($_SESSION['cart'])): ?>
+            <tr>
+                <td colspan=5 align="middle"><?= $empty; ?></td>
+            </tr>
+            <?php else: ?>
             <?php foreach($rows as $row): ?>
 
                 <tr>
@@ -157,20 +171,23 @@ if (isset($_POST['checkout']))
                 </tr>
 
             <?php endforeach; ?>
-
+            <?php endif; ?>
         </table>
     </div>
-        <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        <form method="POST">
 
             <input id="nameInput" type="text" name="name" value="<?= $name; ?>" placeholder="<?= trans('Name ') ?>">
-                <span class="error"> *<?= $nameErr; ?></span><br /> <!-- error message -->
-            <input type="email" name="contactDetails" placeholder="<?= trans('Email Address') ?>"><?= $contactDetails; ?>
-                <span class="error"> *<?= $contactDetailsErr; ?></span> <br /> <!-- error message -->
-            <textarea rows="4" cols="50" name="comments" value="" placeholder="<?= trans('Comment') ?>"><?= $comments; ?></textarea> <br />
-            <input type="submit" name="checkout" value="<?= trans('Checkout') ?>">    
+            <span class="error"> *<?= $nameErr; ?></span><br /> <!-- error message -->
+            <input type="email" name="contactDetails" placeholder="<?= trans('Email Address') ?>" value="<?= $contactDetails ?>">
+            <span class="error"> *<?= $contactDetailsErr; ?></span> <br /> <!-- error message -->
+            <textarea rows="4" cols="50" name="comments" value="" placeholder="<?= trans('Comment') ?>"><?= $comments ?></textarea> <br />
+            <input type="submit" name="checkout" value="<?= trans('Checkout') ?>">
 
         </form>
 
+        <?php if(isset($_GET['mailsent'])): ?> 
+                <p id="mailSent"><?= trans(':)') ?> <?= $checkoutMessage ?></p>  
+        <?php endif; ?>
     
 
     <div id="cartWrapper">
