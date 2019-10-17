@@ -105,7 +105,7 @@ if ($_SESSION['authenticated'] != 1) {
             <span class="error"> <?= $priceErr; ?></span><br />
             <input type="file" name="image" placeholder="<?= trans('Insert product image'); ?>"><br />
 
-            <?php if($_SESSION['edit']): ?>
+            <?php if(isset($_SESSION['edit'])): ?>
                 <input type="submit" name="update" value="<?= trans("Update product"); ?>">
             <?php else: ?>
                 <input type="submit" name="submit" value="<?= trans("Add product"); ?>">

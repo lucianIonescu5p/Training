@@ -18,8 +18,7 @@ if (isset($_GET['id']))
 
     if($key !== false){
 
-        unset($_SESSION['cart'][$key]);  
-        // sort($_SESSION['cart']);
+        unset($_SESSION['cart'][$key]); 
         header("Location: cart.php"); 
 
     } else {
@@ -27,7 +26,6 @@ if (isset($_GET['id']))
         header("Location: cart.php"); 
 
     }
-
 
 };
 print_r($_SESSION['cart']);
@@ -40,7 +38,7 @@ $sql =
     );
 
 $stmt = $conn->prepare($sql);
-$res = $stmt->execute($_SESSION['cart']);
+$res = $stmt->execute(array_values($_SESSION['cart']));
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $rows = $stmt->fetchAll();
 
