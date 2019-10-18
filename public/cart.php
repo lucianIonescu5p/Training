@@ -80,7 +80,7 @@ if (isset($_POST['checkout']) && !empty($name) && !empty($contactDetails) && !em
         $to = SHOPMANAGER;
         $subject = trans("New order!");
         $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+        $headers .= "Content-type:text/html; charset=UTF-8" . "\r\n";
         $headers .= "From: <" . trans($name) . "@example.com>" . "\r\n";
 
         $message = "
@@ -105,7 +105,7 @@ if (isset($_POST['checkout']) && !empty($name) && !empty($contactDetails) && !em
 
                 foreach ($rows as $row) {
                     $message .= " <tr>
-                                    <td align=\"middle\">" . $row['image'] . "</td>
+                                    <td align=\"middle\"><img src=\"http://" . $_SERVER['HTTP_HOST'] . "/images/" . $row['image'] . "\" width=\"70px\" height=\"70px\"></td>
                                     <td align=\"middle\">" . $row['title'] . "</td>
                                     <td align=\"middle\">" . $row['description'] . "</td>
                                     <td align=\"middle\">" . $row['price'] . "</td>

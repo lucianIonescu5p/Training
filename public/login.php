@@ -5,6 +5,7 @@ require_once 'common.php';
 $name = $password = '';
 $nameErr = $passwordErr = '';
 
+//validation
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
 
