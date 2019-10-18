@@ -9,25 +9,18 @@ $nameErr = $passwordErr = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
 
-    if($_POST['username'] === ADMINNAME){
+    if($_POST['username'] === ADMINNAME && $_POST['password'] === ADMINPASS){
 
         $name = ADMINNAME;
-
-    } elseif ($_POST['username'] != $name) {
-
-        $nameErr = trans('This is not the master username');
-
-    }
-
-    if($_POST['password'] === ADMINPASS){
-
         $password = ADMINPASS;
 
-    } elseif ($_POST['password'] != $password) {
+    } elseif ($_POST['username'] != $name && $_POST['password'] != $password) {
 
+        $nameErr = trans('This is not the master username');
         $passwordErr = trans('This is not the master password');
 
     }
+
 }
 
 if(isset($_POST['submit']) && !empty($name) && !empty($password))

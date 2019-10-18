@@ -30,9 +30,12 @@ if (isset($_GET['logOut'])) {
 //Delete product
 if (isset($_GET['delete'])) {
 
+    unlink("images/" . $rows['image']);
+
     $deleteSql = 'DELETE FROM products WHERE id=' . $_GET['delete'] . '';
     $stmt = $conn->prepare($deleteSql);
     $stmt->execute();
+    
     header('Location: products.php');
     
 }
@@ -41,7 +44,7 @@ if (isset($_GET['delete'])) {
 if (isset($_GET['edit'])) {
 
     $_SESSION['edit'] = true;
-    $_SESSION['id'] = $row['id'];
+    $_SESSION['id'] = $rows['id'];
 
 
     header('Location: product.php?edit=' . $_SESSION['id']);
@@ -77,7 +80,7 @@ if (isset($_GET['edit'])) {
 
                 <tr>
 
-                    <td align="middle"><img src="images/<?= $row['id'] ?>.jpg" width="70px" height="70px"></td>
+                    <td align="middle"><img src="images/<?= $row['image'] ?>" width="70px" height="70px"></td>
                     <td align="middle"><?= $row['title'] ?></td>
                     <td align="middle"><?= $row['description'] ?></td>
                     <td align="middle"><?= $row['price'] ?></td>

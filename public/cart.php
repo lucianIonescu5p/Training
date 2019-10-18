@@ -28,7 +28,7 @@ if (isset($_GET['id']))
     }
 
 };
-print_r($_SESSION['cart']);
+
 $sql = 
 'SELECT * FROM products' . (      
     count($_SESSION['cart']) ?
@@ -105,7 +105,7 @@ if (isset($_POST['checkout']) && !empty($name) && !empty($contactDetails) && !em
 
                 foreach ($rows as $row) {
                     $message .= " <tr>
-                                    <td align=\"middle\"><img src=\"http://" . $_SERVER['HTTP_HOST'] . "/images/" . $row['image'] . "\" width=\"70px\" height=\"70px\"></td>
+                                    <td align=\"middle\"><img src=\"http://" . $_SERVER['SERVER_NAME'] . "/images/" . $row['image'] . "\" width=\"70px\" height=\"70px\"></td>
                                     <td align=\"middle\">" . $row['title'] . "</td>
                                     <td align=\"middle\">" . $row['description'] . "</td>
                                     <td align=\"middle\">" . $row['price'] . "</td>
@@ -161,7 +161,7 @@ if(isset($_GET['mailsent'])){
             <?php foreach($rows as $row): ?>
 
                 <tr>
-                    <td align="middle"><img src="images/<?= $row['id'] ?>.jpg" width="70px" height="70px"></td>
+                    <td align="middle"><img src="images/<?= $row['image'] ?>" width="70px" height="70px"></td>
                     <td align="middle"><?= $row['title'] ?></td>
                     <td align="middle"><?= $row['description'] ?></td>
                     <td align="middle"><?= $row['price'] ?></td>
@@ -184,7 +184,7 @@ if(isset($_GET['mailsent'])){
         </form>
 
         <?php if(isset($_GET['mailsent'])): ?> 
-                <p id="mailSent"><?= trans(':)') ?> <?= $checkoutMessage ?></p>  
+                <p class="success"><?= trans(':)') ?> <?= $checkoutMessage ?></p>  
         <?php endif; ?>
     
 

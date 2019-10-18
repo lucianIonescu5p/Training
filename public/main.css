@@ -67,6 +67,6 @@ body {
     margin-top: 20px;
 }
 
-#mailSent{
+.success{
     color: green;
 }

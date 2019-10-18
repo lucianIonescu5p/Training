@@ -9,10 +9,17 @@ if ($_SESSION['authenticated'] != 1) {
 
 } elseif ($_SESSION['authenticated'] == 1) {
 
+    $sql = 'SELECT * FROM products';
+
+    $stmt = $conn->prepare($sql);
+    $res = $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $rows = $stmt->fetchAll();
+
     $title = $description = $image = '';
     $price = null;
 
-    $titleErr = $descriptionErr = $priceErr = '';
+    $titleErr = $descriptionErr = $priceErr = $imageErr = '';
 
     //data validation
     if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -51,17 +58,57 @@ if ($_SESSION['authenticated'] != 1) {
             $price = sanitize_input($_POST['price']);
 
         }
+        
+        if (empty($_POST['image'])){
+        //image validation
+            $file = $_FILES['image'];
+            $fileName = $_FILES['image']['name'];
+            $fileTmp = $_FILES['image']['tmp_name'];
+            $fileSize = $_FILES['image']['size'];
+            $fileError = $_FILES['image']['error'];
+            $fileType = $_FILES['image']['type'];
+
+            $fileExt = explode('.', $fileName);
+            $fileActualExt = strtolower(end($fileExt));
+
+            $allowed = array('jpg', 'jpeg', 'png', 'gif');
+
+            if(in_array($fileActualExt, $allowed)){
+
+                if($fileError === 0){
+
+                    if($fileSize < 150000) {
+
+                        $image = uniqid('', true) . '.' . $fileActualExt;
+                        $fileDestination = "images/" . basename($image);
+                        move_uploaded_file($fileTmp, $fileDestination);
+
+                    } else{
+                        $imageErr = "File too big!";
+                    }
+
+                } else {
+                    $imageErr = "Sorry, there was an error uploading the image";
+                }
+
+            } else {
+                $imageErr = "You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.";
+            }
+        } else {
+            $imageErr = "Please upload an image";
+        }
     }
 
-    //Insert new product
-    if (isset($_POST['submit']) && $title != '' && $description != '' && $price != '') {
 
+    if (isset($_POST['submit']) && $title != '' && $description != '' && $price != '' && $image != '') {
+
+        
         $sql = 'INSERT INTO products(title, description, price, image) 
         VALUES (:title, :description, :price, :image)';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute(array('title' => $title, 'description' => $description, 'price' => $price, 'image' => $image));
-        echo 'Inserted';
+        header("Location: product.php?success");
 
     }
 
@@ -78,7 +125,7 @@ if ($_SESSION['authenticated'] != 1) {
     if (isset($_GET['products'])) {
 
         $_SESSION['edit'] = false;
-        header('Location: products.php');
+        header("Location: products.php?" . trans('success'));
         die();
 
     }
@@ -97,15 +144,20 @@ if ($_SESSION['authenticated'] != 1) {
         
         <form method="POST" enctype="multipart/form-data">
 
+            <?php if(isset($_GET['success'])): ?>
+            <p class="success"><?= trans('Product updated') ?></p>
+            <?php endif; ?>
+
             <input type="text" name="title" value="<?= sanitize_input($title) ?>" placeholder="<?= trans('Insert product title'); ?>">
             <span class="error"> <?= $titleErr; ?></span><br />
             <input type="text" name="description" value="<?= sanitize_input($description) ?>" placeholder="<?= trans('Insert product description'); ?>">
             <span class="error"> <?= $descriptionErr; ?></span><br />
             <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= trans('Insert product price'); ?>">
             <span class="error"> <?= $priceErr; ?></span><br />
-            <input type="file" name="image" placeholder="<?= trans('Insert product image'); ?>"><br />
+            <input type="file" name="image" placeholder="<?= trans('Insert product image'); ?>">
+            <span class="error"> <?= $imageErr; ?></span><br />
 
-            <?php if(isset($_SESSION['edit'])): ?>
+            <?php if($_SESSION['edit']): ?>
                 <input type="submit" name="update" value="<?= trans("Update product"); ?>">
             <?php else: ?>
                 <input type="submit" name="submit" value="<?= trans("Add product"); ?>">
