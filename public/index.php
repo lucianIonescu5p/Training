@@ -12,7 +12,7 @@ if (isset($_GET['id'])) {
     header("Location: index.php");
     die();
 };
-   
+
 $sql = 
     'SELECT * FROM products' . (      
     count($_SESSION['cart']) ?
@@ -31,7 +31,7 @@ if (isset($_GET['logOut'])) {
     unset($_SESSION['authenticated']);
     header("Location: index.php");
     die();
-    
+ 
 }
 
 ?>

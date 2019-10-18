@@ -17,6 +17,7 @@ if ($_SESSION['authenticated'] != 1) {
     $rows = $stmt->fetchAll();
 
 }
+var_dump($rows);
 
 //Log out
 if (isset($_GET['logOut'])) {
@@ -29,15 +30,21 @@ if (isset($_GET['logOut'])) {
 
 //Delete product
 if (isset($_GET['delete'])) {
+    
+    $sql = 'SELECT * FROM products WHERE id = ' . $_GET['delete'];
+    $stmt = $conn->prepare($sql);
+    $res = $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $rows = $stmt->fetch();
 
     unlink("images/" . $rows['image']);
 
-    $deleteSql = 'DELETE FROM products WHERE id=' . $_GET['delete'] . '';
+    $deleteSql = 'DELETE FROM products WHERE id=' . $_GET['delete'];
     $stmt = $conn->prepare($deleteSql);
     $stmt->execute();
-    
+
     header('Location: products.php');
-    
+
 }
 
 //Edit product
