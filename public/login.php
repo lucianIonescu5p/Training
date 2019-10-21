@@ -8,27 +8,24 @@ $nameErr = $passwordErr = '';
 //validation
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
-
-    if($_POST['username'] === ADMINNAME && $_POST['password'] === ADMINPASS){
-
+    if($_POST['username'] === ADMINNAME){
         $name = ADMINNAME;
+    } elseif (empty($_POST['username'])){
+        $nameErr = trans("Master username is required");
+    } 
+    if($_POST['password'] === ADMINPASS){
         $password = ADMINPASS;
-
-    } elseif ($_POST['username'] != $name && $_POST['password'] != $password) {
-
-        $nameErr = trans('This is not the master username');
-        $passwordErr = trans('This is not the master password');
-
-    }
-
-}
+    } elseif (empty($_POST['password'])){
+        $passwordErr = trans("Master passcode is required");
+    } 
+};
 
 if(isset($_POST['submit']) && !empty($name) && !empty($password))
 {
-
-    $_SESSION['authenticated'] = true;
-    header('Location: products.php');
-
+    
+        $_SESSION['authenticated'] = true;
+        header("Location: products.php");
+    
 }
 ?>
 <!DOCTYPE html>
@@ -51,7 +48,7 @@ if(isset($_POST['submit']) && !empty($name) && !empty($password))
                 <span class="error"> <?= $nameErr; ?></span> <br /><br />
 
                 <label for="password"><?= trans('Master passcode: ') ?></label><br />
-                <input type="password" name="password"><br />
+                <input type="password" name="password" value=""><br />
                 <span class="error"> <?= $passwordErr; ?></span> <br /><br />
 
                 <input type="submit" name="submit" value="Log in">

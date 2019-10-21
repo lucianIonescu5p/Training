@@ -9,13 +9,6 @@ if ($_SESSION['authenticated'] != 1) {
 
 } elseif ($_SESSION['authenticated'] == 1) {
 
-    $sql = 'SELECT * FROM products';
-
-    $stmt = $conn->prepare($sql);
-    $res = $stmt->execute();
-    $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    $rows = $stmt->fetchAll();
-
     $title = $description = $image = '';
     $price = null;
 
@@ -94,12 +87,13 @@ if ($_SESSION['authenticated'] != 1) {
             } else {
                 $imageErr = "You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.";
             }
+
         } else {
             $imageErr = "Please upload an image";
         }
     }
 
-
+    //insert new product
     if (isset($_POST['submit']) && $title != '' && $description != '' && $price != '' && $image != '') {
 
         
@@ -108,16 +102,37 @@ if ($_SESSION['authenticated'] != 1) {
 
         $stmt = $conn->prepare($sql);
         $stmt->execute(array('title' => $title, 'description' => $description, 'price' => $price, 'image' => $image));
-        header("Location: product.php?success");
+        header("Location: product.php?" . trans('success'));
 
     }
 
     //Update product
-    if (isset($_POST['update'])) {
+    if($_SESSION['edit']){
 
-        $sql = 'UPDATE products SET title = ' . $title . ', description = ' . $description . ', price = ' . $price . ' WHERE id = ' . $id . '';
+        $sql = 'SELECT * FROM products WHERE id = ' . $_SESSION['id'];
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        $res = $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetch();
+
+        $title = $rows['title'];
+        $description = $rows['description'];
+        $price = $rows['price'];
+    
+
+    }
+
+    if (isset($_POST['update']) && $title != '' && $description != '' && $price != '' && $image != '') {
+
+        $sql = 'UPDATE products SET title = ?, description = ?, price = ?, image = ? WHERE products.id = ?';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$_POST['title'], $_POST['description'], $_POST['price'], $image, $rows['id']]);
+
+        $_SESSION['edit'] = false;
+        
+        unlink("images/" . $rows['image']);
+
+        header("Location: product.php?" . trans('success'));
 
     }
 
@@ -125,7 +140,7 @@ if ($_SESSION['authenticated'] != 1) {
     if (isset($_GET['products'])) {
 
         $_SESSION['edit'] = false;
-        header("Location: products.php?" . trans('success'));
+        header("Location: products.php");
         die();
 
     }
@@ -154,7 +169,7 @@ if ($_SESSION['authenticated'] != 1) {
             <span class="error"> <?= $descriptionErr; ?></span><br />
             <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= trans('Insert product price'); ?>">
             <span class="error"> <?= $priceErr; ?></span><br />
-            <input type="file" name="image" placeholder="<?= trans('Insert product image'); ?>">
+            <input type="file" name="image" value="<?= $rows['image'] ?>" placeholder="<?= trans('Insert product image'); ?>" ><img src="<?=$rows['image'] ?>"/>
             <span class="error"> <?= $imageErr; ?></span><br />
 
             <?php if($_SESSION['edit']): ?>

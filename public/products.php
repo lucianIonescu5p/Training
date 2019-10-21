@@ -17,7 +17,6 @@ if ($_SESSION['authenticated'] != 1) {
     $rows = $stmt->fetchAll();
 
 }
-var_dump($rows);
 
 //Log out
 if (isset($_GET['logOut'])) {
@@ -44,17 +43,23 @@ if (isset($_GET['delete'])) {
     $stmt->execute();
 
     header('Location: products.php');
-
+    die();
 }
 
 //Edit product
 if (isset($_GET['edit'])) {
 
+    $sql = 'SELECT * FROM products WHERE id = ' . $_GET['edit'];
+    $stmt = $conn->prepare($sql);
+    $res = $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $rows = $stmt->fetch();
+
     $_SESSION['edit'] = true;
     $_SESSION['id'] = $rows['id'];
 
-
     header('Location: product.php?edit=' . $_SESSION['id']);
+    die();
 }
 ?>
 <!DOCTYPE html>
