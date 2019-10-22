@@ -45,7 +45,7 @@ $rows = $stmt->fetchAll();
 //form checkout
 $name = $contactDetails = $comments = "";
 $nameErr = $contactDetailsErr = "";
-
+$totalPrice = 0;
 //validation
 if ($_SERVER['REQUEST_METHOD'] == 'POST') 
 {
@@ -91,6 +91,7 @@ if (isset($_POST['checkout']) && !empty($name) && !empty($contactDetails) && !em
                 <body>
 
                     <p>" . trans('Hello, here\'s an order from') . " " . htmlspecialchars($name) . "</p>
+                    <p>At " . date("d/M/Y H:i:s") . "</p>
                     <p>" . trans('Order details are:') . "</p>
 
                     <table border='1' cellpadding='3'>
@@ -104,6 +105,7 @@ if (isset($_POST['checkout']) && !empty($name) && !empty($contactDetails) && !em
                 </tr> ";
 
                 foreach ($rows as $row) {
+                    $totalPrice += $row['price'];
                     $message .= " <tr>
                                     <td align=\"middle\"><img src=\"http://" . $_SERVER['SERVER_NAME'] . "/images/" . $row['image'] . "\" width=\"70px\" height=\"70px\"></td>
                                     <td align=\"middle\">" . $row['title'] . "</td>
@@ -111,7 +113,12 @@ if (isset($_POST['checkout']) && !empty($name) && !empty($contactDetails) && !em
                                     <td align=\"middle\">" . $row['price'] . "</td>
                                 </tr> ";
                 }
-                    $message .= " </table>
+                    $message .= " 
+                        <tr>
+                            <td colspan=3 align=\"middle\"><b>" . trans('Total price') . "</b></td>
+                            <td align=\"middle\"><b>" . $totalPrice . "</b></td>
+                        </tr>
+                    </table>
                     <p> " . trans('Contact details:') . " " . htmlspecialchars($contactDetails) . "</p>
                     <p> " . trans('Additional messages:') . " " . htmlspecialchars($comments) . "</p>
                 </body>
@@ -159,7 +166,7 @@ if(isset($_GET['mailsent'])){
             </tr>
             <?php else: ?>
             <?php foreach($rows as $row): ?>
-
+            <?php $totalPrice += $row['price']; ?>
                 <tr>
                     <td align="middle"><img src="images/<?= $row['image'] ?>" width="70px" height="70px"></td>
                     <td align="middle"><?= $row['title'] ?></td>
@@ -170,14 +177,19 @@ if(isset($_GET['mailsent'])){
 
             <?php endforeach; ?>
             <?php endif; ?>
+                <tr>
+                    <td colspan=3 align="middle"><b><?= trans('Total price') ?></b></td>
+                    <td align="middle"><b><?= $totalPrice; ?></b></td>
+                    <td align="middle">:)</td>
+                </tr>
         </table>
     </div>
         <form method="POST">
 
             <input id="nameInput" type="text" name="name" value="<?= $name; ?>" placeholder="<?= trans('Name ') ?>">
-            <span class="error"> *<?= $nameErr; ?></span><br /> <!-- error message -->
+            <span class="error"> *<?= $nameErr; ?></span><br /> 
             <input type="email" name="contactDetails" placeholder="<?= trans('Email Address') ?>" value="<?= $contactDetails ?>">
-            <span class="error"> *<?= $contactDetailsErr; ?></span> <br /> <!-- error message -->
+            <span class="error"> *<?= $contactDetailsErr; ?></span> <br /> 
             <textarea rows="4" cols="50" name="comments" value="" placeholder="<?= trans('Comment') ?>"><?= $comments ?></textarea> <br />
             <input type="submit" name="checkout" value="<?= trans('Checkout') ?>">
 

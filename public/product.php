@@ -96,7 +96,6 @@ if ($_SESSION['authenticated'] != 1) {
     //insert new product
     if (isset($_POST['submit']) && $title != '' && $description != '' && $price != '' && $image != '') {
 
-        
         $sql = 'INSERT INTO products(title, description, price, image) 
         VALUES (:title, :description, :price, :image)';
 
