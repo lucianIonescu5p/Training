@@ -2,7 +2,7 @@
 
 require_once 'common.php';
 
-if ($_SESSION['authenticated'] != 1) {
+if (!$_SESSION['authenticated']) {
 
     echo trans('You need to be a god to enter this page');
     die();
@@ -15,41 +15,25 @@ if ($_SESSION['authenticated'] != 1) {
     $titleErr = $descriptionErr = $priceErr = $imageErr = '';
 
     //data validation
-    if ($_SERVER['REQUEST_METHOD'] == 'POST')
+    if (isset($_POST['submit']) || isset($_POST['update']))
     {
 
         if (empty($_POST['title'])) {
-
             $titleErr = trans('Please insert a title');
-
         } else {
-
             $title = sanitize_input($_POST['title']);
-
         };
-
         if (empty($_POST['description'])) {
-
             $descriptionErr = trans('Please insert a description');
-
         } else {
-
             $description = sanitize_input($_POST['description']);
-
         };
-
         if (empty($_POST['price'])) {
-
             $priceErr = trans('Please specify a \'real\' price');
-
         } elseif ($_POST['price'] < 0) {
-
             $priceErr = "Please enter a positive integer value.";
-
         } else {
-    
             $price = sanitize_input($_POST['price']);
-
         }
         
         if (empty($_POST['image'])){
@@ -94,7 +78,7 @@ if ($_SESSION['authenticated'] != 1) {
     }
 
     //insert new product
-    if (isset($_POST['submit']) && $title != '' && $description != '' && $price != '' && $image != '') {
+    if (isset($_POST['submit']) && empty($titleErr) && empty($descriptionErr) && empty($priceErr) && empty($imageErr)) {
 
         $sql = 'INSERT INTO products(title, description, price, image) 
         VALUES (:title, :description, :price, :image)';
@@ -102,6 +86,7 @@ if ($_SESSION['authenticated'] != 1) {
         $stmt = $conn->prepare($sql);
         $stmt->execute(array('title' => $title, 'description' => $description, 'price' => $price, 'image' => $image));
         header("Location: product.php?" . trans('success'));
+        die();
 
     }
 
@@ -121,7 +106,7 @@ if ($_SESSION['authenticated'] != 1) {
 
     }
 
-    if (isset($_POST['update']) && $title != '' && $description != '' && $price != '' && $image != '') {
+    if (isset($_POST['update']) && empty($titleErr) && empty($descriptionErr) && empty($priceErr) && empty($imageErr)) {
 
         $sql = 'UPDATE products SET title = ?, description = ?, price = ?, image = ? WHERE products.id = ?';
         $stmt = $conn->prepare($sql);
@@ -132,6 +117,7 @@ if ($_SESSION['authenticated'] != 1) {
         unlink("images/" . $rows['image']);
 
         header("Location: product.php?" . trans('success'));
+        die();
 
     }
 

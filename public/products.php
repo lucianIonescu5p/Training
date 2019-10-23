@@ -2,12 +2,12 @@
 
 require_once 'common.php';
 
-if ($_SESSION['authenticated'] != 1) {
+if (!$_SESSION['authenticated']) {
 
     echo trans('You need to be a god to enter this page');
     die();
 
-} elseif ($_SESSION['authenticated'] == 1) {
+} elseif ($_SESSION['authenticated']) {
 
     $sql = 'SELECT * FROM products';
 

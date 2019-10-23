@@ -2,9 +2,6 @@
 
 require_once 'common.php';
 
-if (empty($_SESSION['cart'])) {
-    $_SESSION['cart'] = array();
-};
 
 //add items to the cart
 if (isset($_GET['id'])) {
@@ -26,7 +23,7 @@ $res = $stmt->execute($_SESSION['cart']);
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $rows = $stmt->fetchAll();
 
-if (isset($_GET['logOut'])) {
+if (isset($_GET['log_out'])) {
 
     unset($_SESSION['authenticated']);
     header("Location: index.php");
@@ -47,9 +44,9 @@ if (isset($_GET['logOut'])) {
     <body>
 
         <div id="loginWrapper">
-            <?php if(isset($_SESSION['authenticated']) && $_SESSION['authenticated'] == 1): ?>
-            <a id="login" href="index.php?logOut"><?= trans('Log out') ?></a>
-            <?php elseif(!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] == 0): ?>
+            <?php if(!(!isset($_SESSION['authenticated']) || !$_SESSION['authenticated'])): ?>
+            <a id="login" href="index.php?log_out"><?= trans('Log out') ?></a>
+            <?php else: ?>
             <a id="login" href="login.php"><?= trans('Log in') ?></a>
             <?php endif; ?>
         </div>

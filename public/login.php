@@ -6,7 +6,7 @@ $name = $password = '';
 $nameErr = $passwordErr = '';
 
 //validation
-if ($_SERVER['REQUEST_METHOD'] == 'POST')
+if (isset($_POST['submit']))
 {
     if($_POST['username'] === ADMINNAME){
         $name = ADMINNAME;
@@ -20,11 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     } 
 };
 
-if(isset($_POST['submit']) && !empty($name) && !empty($password))
+if(isset($_POST['submit']) && empty($nameErr) && empty($passwordErr))
 {
+    
     
         $_SESSION['authenticated'] = true;
         header("Location: products.php");
+        die();
     
 }
 ?>

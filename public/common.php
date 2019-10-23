@@ -17,6 +17,11 @@ function trans($label)
     return isset($translations[$label]) ? $translations[$label] : $label;
 };
 
+//instantiate cart as an array
+if (empty($_SESSION['cart'])) {
+    $_SESSION['cart'] = array();
+};
+
 //data test function
 function sanitize_input($data) {
     
