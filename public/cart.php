@@ -151,13 +151,17 @@ if(isset($_GET['mail_sent'])){
                 <th align="middle"><?= trans('Price') ?></th>
                 <th align="middle"><?= trans('Remove from cart') ?></th>
             </tr>
+
             <?php if(empty($_SESSION['cart'])): ?>
+
             <tr>
                 <td colspan=5 align="middle"><?= $empty; ?></td>
             </tr>
+
             <?php else: ?>
             <?php foreach($rows as $row): ?>
             <?php $totalPrice += $row['price']; ?>
+
                 <tr>
                     <td align="middle"><img src="images/<?= $row['image'] ?>" width="70px" height="70px"></td>
                     <td align="middle"><?= $row['title'] ?></td>
@@ -177,6 +181,7 @@ if(isset($_GET['mail_sent'])){
 
         </table>
     </div>
+    
         <form method="POST">
 
             <input id="nameInput" type="text" name="name" value="<?= $name; ?>" placeholder="<?= trans('Name ') ?>">

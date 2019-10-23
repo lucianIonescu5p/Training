@@ -48,11 +48,9 @@ if(isset($_POST['submit']) && empty($nameErr) && empty($passwordErr))
                 <label for="username"><?= trans('Master username: ') ?></label><br />
                 <input type="text" name="username" value="<?= $name; ?>"><br />
                 <span class="error"> <?= $nameErr; ?></span> <br /><br />
-
                 <label for="password"><?= trans('Master passcode: ') ?></label><br />
                 <input type="password" name="password" value=""><br />
                 <span class="error"> <?= $passwordErr; ?></span> <br /><br />
-
                 <input type="submit" name="submit" value="Log in">
 
             </form>

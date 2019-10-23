@@ -102,9 +102,7 @@ if (isset($_GET['edit'])) {
                 </tr>
                 
             <?php endforeach; ?>  
-
         </table>
-
     </div>
 
     <div id="productsBtn">

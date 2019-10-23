@@ -2,7 +2,6 @@
 
 require_once 'common.php';
 
-
 //add items to the cart
 if (isset($_GET['id'])) {
     array_push($_SESSION['cart'], $_GET['id']);
@@ -11,7 +10,7 @@ if (isset($_GET['id'])) {
 };
 
 $sql = 
-    'SELECT * FROM products' . (      
+    'SELECT * FROM products' . (
     count($_SESSION['cart']) ?
         ' WHERE id 
         NOT IN (' . implode(',', array_fill(0, count($_SESSION['cart']), '?')) . ')' :

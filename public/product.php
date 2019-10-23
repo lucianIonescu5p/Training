@@ -53,25 +53,21 @@ if (!$_SESSION['authenticated']) {
             if(in_array($fileActualExt, $allowed)){
 
                 if($fileError === 0){
-
                     if($fileSize < 150000) {
 
                         $image = uniqid('', true) . '.' . $fileActualExt;
-                        $fileDestination = "images/" . basename($image);
+                        $fileDestination = 'images/' . basename($image);
                         move_uploaded_file($fileTmp, $fileDestination);
 
                     } else{
                         $imageErr = 'File too big!';
                     }
-
                 } else {
                     $imageErr = 'Sorry, there was an error uploading the image';
                 }
-
             } else {
                 $imageErr = 'You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.';
             }
-
         } else {
             $imageErr = 'Please upload an image';
         }
@@ -137,7 +133,7 @@ if (!$_SESSION['authenticated']) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title><?= trans("Product"); ?></title>
+        <title><?= trans('Product'); ?></title>
         <link rel="stylesheet" href="main.css">
     </head>
     <body>
@@ -154,7 +150,7 @@ if (!$_SESSION['authenticated']) {
             <span class="error"> <?= $descriptionErr; ?></span><br />
             <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= trans('Insert product price'); ?>">
             <span class="error"> <?= $priceErr; ?></span><br />
-            <input type="file" name="image" value="<?= $rows['image'] ?>" placeholder="<?= trans('Insert product image'); ?>" ><img src="<?=$rows['image'] ?>"/>
+            <input type="file" name="image" placeholder="<?= trans('Insert product image'); ?>" ><img src="<?=$rows['image'] ?>"/>
             <span class="error"> <?= $imageErr; ?></span><br />
 
             <?php if($_SESSION['edit']): ?>
