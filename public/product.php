@@ -61,19 +61,19 @@ if (!$_SESSION['authenticated']) {
                         move_uploaded_file($fileTmp, $fileDestination);
 
                     } else{
-                        $imageErr = "File too big!";
+                        $imageErr = 'File too big!';
                     }
 
                 } else {
-                    $imageErr = "Sorry, there was an error uploading the image";
+                    $imageErr = 'Sorry, there was an error uploading the image';
                 }
 
             } else {
-                $imageErr = "You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.";
+                $imageErr = 'You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.';
             }
 
         } else {
-            $imageErr = "Please upload an image";
+            $imageErr = 'Please upload an image';
         }
     }
 
@@ -85,7 +85,7 @@ if (!$_SESSION['authenticated']) {
 
         $stmt = $conn->prepare($sql);
         $stmt->execute(array('title' => $title, 'description' => $description, 'price' => $price, 'image' => $image));
-        header("Location: product.php?" . trans('success'));
+        header('Location: product.php?' . trans('success'));
         die();
 
     }
@@ -114,9 +114,9 @@ if (!$_SESSION['authenticated']) {
 
         $_SESSION['edit'] = false;
         
-        unlink("images/" . $rows['image']);
+        unlink('images/' . $rows['image']);
 
-        header("Location: product.php?" . trans('success'));
+        header('Location: product.php?' . trans('success'));
         die();
 
     }
@@ -125,7 +125,7 @@ if (!$_SESSION['authenticated']) {
     if (isset($_GET['products'])) {
 
         $_SESSION['edit'] = false;
-        header("Location: products.php");
+        header('Location: products.php');
         die();
 
     }
@@ -158,9 +158,9 @@ if (!$_SESSION['authenticated']) {
             <span class="error"> <?= $imageErr; ?></span><br />
 
             <?php if($_SESSION['edit']): ?>
-                <input type="submit" name="update" value="<?= trans("Update product"); ?>">
+                <input type="submit" name="update" value="<?= trans('Update product'); ?>">
             <?php else: ?>
-                <input type="submit" name="submit" value="<?= trans("Add product"); ?>">
+                <input type="submit" name="submit" value="<?= trans('Add product'); ?>">
             <?php endif; ?>
             
         </form>

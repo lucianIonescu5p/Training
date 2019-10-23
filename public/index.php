@@ -26,7 +26,7 @@ $rows = $stmt->fetchAll();
 if (isset($_GET['log_out'])) {
 
     unset($_SESSION['authenticated']);
-    header("Location: index.php");
+    header('Location: index.php');
     die();
  
 }

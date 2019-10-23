@@ -25,7 +25,7 @@ if(isset($_POST['submit']) && empty($nameErr) && empty($passwordErr))
     
     
         $_SESSION['authenticated'] = true;
-        header("Location: products.php");
+        header('Location: products.php');
         die();
     
 }

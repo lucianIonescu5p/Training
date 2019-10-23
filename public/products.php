@@ -36,7 +36,7 @@ if (isset($_GET['delete'])) {
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
     $rows = $stmt->fetch();
 
-    unlink("images/" . $rows['image']);
+    unlink('images/' . $rows['image']);
 
     $deleteSql = 'DELETE FROM products WHERE id=' . $_GET['delete'];
     $stmt = $conn->prepare($deleteSql);

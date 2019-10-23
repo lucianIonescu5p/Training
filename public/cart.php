@@ -13,12 +13,12 @@ if (isset($_GET['id']))
     if($key !== false){
 
         unset($_SESSION['cart'][$key]); 
-        header("Location: cart.php"); 
+        header('Location: cart.php'); 
         die();
 
     } else {
 
-        header("Location: cart.php"); 
+        header('Location: cart.php'); 
         die();
 
     }
@@ -39,8 +39,8 @@ $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $rows = $stmt->fetchAll();
 
 //form checkout
-$name = $contactDetails = $comments = "";
-$nameErr = $contactDetailsErr = $cartErr = "";
+$name = $contactDetails = $comments = '';
+$nameErr = $contactDetailsErr = $cartErr = '';
 $totalPrice = 0;
 //validation
 if (isset($_POST['checkout'])) 
@@ -189,7 +189,7 @@ if(isset($_GET['mail_sent'])){
 
         </form>
 
-        <?php if(isset($_GET['mailsent'])): ?> 
+        <?php if(isset($_GET['mail_sent'])): ?> 
                 <p class="success"><?= trans(':)') ?> <?= $checkoutMessage ?></p>  
         <?php endif; ?>
     
