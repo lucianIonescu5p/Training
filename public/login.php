@@ -10,25 +10,24 @@ if (isset($_POST['submit']))
 {
     if($_POST['username'] === ADMINNAME){
         $name = ADMINNAME;
-    } elseif (empty($_POST['username'])){
+    } else {
         $nameErr = trans("Master username is required");
     } 
     if($_POST['password'] === ADMINPASS){
         $password = ADMINPASS;
-    } elseif (empty($_POST['password'])){
+    } else {
         $passwordErr = trans("Master passcode is required");
     } 
-};
 
-if(isset($_POST['submit']) && empty($nameErr) && empty($passwordErr))
-{
-    
-    
+    if(empty($nameErr) && empty($passwordErr))
+    {
+        
         $_SESSION['authenticated'] = true;
         header('Location: products.php');
         die();
-    
-}
+        
+    }
+};
 ?>
 <!DOCTYPE html>
 <html lang="en">

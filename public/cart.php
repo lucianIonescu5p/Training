@@ -67,57 +67,77 @@ if (isset($_POST['checkout']))
 if (isset($_POST['checkout']) && empty($nameErr) && empty($contactDetailsErr) && empty($cartErr))
 {
 
-        $to = SHOPMANAGER;
-        $subject = trans('New order!');
-        $headers = 'MIME-Version: 1.0' . "\r\n";
-        $headers .= 'Content-type:text/html; charset=UTF-8' . "\r\n";
-        $headers .= 'From: <' . trans($contactDetails) . '>' . "\r\n";
+    $to = SHOPMANAGER;
+    $subject = trans('New order!');
+    $headers = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'Content-type:text/html; charset=UTF-8' . "\r\n";
+    $headers .= 'From: <' . trans($contactDetails) . '>' . "\r\n";
 
-        $message = '
-            <html>
-                <head>
-                    <title>' . trans('Order') . '</title>
-                </head>
-                <body>
+    $message = '
+        <html>
+            <head>
+                <title>' . trans('Order') . '</title>
+            </head>
+            <body>
 
-                    <p>' . trans('Hello, here\'s an order from') . ' ' . htmlspecialchars($name) . '</p>
-                    <p>At ' . date('d/M/Y H:i:s') . '</p>
-                    <p>' . trans('Order details are:') . '</p>
+                <p>' . trans('Hello, here\'s an order from') . ' ' . htmlspecialchars($name) . '</p>
+                <p>At ' . date('d/M/Y H:i:s') . '</p>
+                <p>' . trans('Order details are:') . '</p>
 
-                    <table border="1" cellpadding="3">
+                <table border="1" cellpadding="3">
 
-                <tr>
-                    <th align="middle">' . trans('Product') . ' </th>
-                    <th align="middle">' . trans('Name') . ' </th>
-                    <th align="middle">' . trans('Description') . ' </th>
-                    <th align="middle">' . trans('Price') . ' </th>
+            <tr>
+                <th align="middle">' . trans('Product') . ' </th>
+                <th align="middle">' . trans('Name') . ' </th>
+                <th align="middle">' . trans('Description') . ' </th>
+                <th align="middle">' . trans('Price') . ' </th>
 
-                </tr> ';
+            </tr> ';
 
-                foreach ($rows as $row) {
-                    $totalPrice += $row['price'];
-                    $message .= ' <tr>
-                                    <td align="middle"><img src="' . (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . '/images/' . $row['image'] . '" width="70px" height="70px"></td>
-                                    <td align="middle">' . $row['title'] . '</td>
-                                    <td align="middle">' . $row['description'] . '</td>
-                                    <td align="middle">' . $row['price'] . '</td>
-                                </tr> ';
-                }
-                    $message .= ' 
-                        <tr>
-                            <td colspan=3 align="middle"><b>' . trans('Total price') . '</b></td>
-                            <td align="middle"><b>' . $totalPrice . '</b></td>
-                        </tr>
-                    </table>
-                    <p> ' . trans('Contact details:') . ' ' . htmlspecialchars($contactDetails) . '</p>
-                    <p> ' . trans('Additional messages:') . ' ' . htmlspecialchars($comments) . '</p>
-                </body>
-            </html> ';
+            foreach ($rows as $row) {
+                $totalPrice += $row['price'];
+                $message .= ' 
+                    <tr>
+                        <td align="middle"><img src="' . (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . '/images/' . $row['image'] . '" width="70px" height="70px"></td>
+                        <td align="middle">' . $row['title'] . '</td>
+                        <td align="middle">' . $row['description'] . '</td>
+                        <td align="middle">' . $row['price'] . '</td>
+                    </tr> ';
+            }
+                $message .= ' 
+                    <tr>
+                        <td colspan=3 align="middle"><b>' . trans('Total price') . '</b></td>
+                        <td align="middle"><b>' . $totalPrice . '</b></td>
+                    </tr>
+                </table>
+                <p> ' . trans('Contact details:') . ' ' . htmlspecialchars($contactDetails) . '</p>
+                <p> ' . trans('Additional messages:') . ' ' . htmlspecialchars($comments) . '</p>
+            </body>
+        </html> ';
 
-        mail($to, $subject, $message, $headers);
-        header('Location: cart.php?mail_sent');
-        die();
-        
+    mail($to, $subject, $message, $headers);
+
+    //log orders
+    $sql = 'INSERT INTO orders(name, contact_details, price) 
+    VALUES (:name, :contact_details, :price)';
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array('name' => $name, 'contact_details' => $contactDetails, 'price' => $totalPrice));
+    $last_id = $conn->lastInsertId();
+
+    foreach($_SESSION['cart'] as $product){
+
+        $sql = 'INSERT INTO order_product(order_id ,product_id) 
+        VALUES (:order_id, :product_id)';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':order_id' => $last_id, ':product_id' => $product));
+
+    }
+
+    header('Location: cart.php?mail_sent');
+    die();
+
 }
 
 if(isset($_GET['mail_sent'])){
@@ -181,7 +201,7 @@ if(isset($_GET['mail_sent'])){
 
         </table>
     </div>
-    
+    <?php print_r($_SESSION['cart']) ?>
         <form method="POST">
 
             <input id="nameInput" type="text" name="name" value="<?= $name; ?>" placeholder="<?= trans('Name ') ?>">
@@ -197,7 +217,6 @@ if(isset($_GET['mail_sent'])){
         <?php if(isset($_GET['mail_sent'])): ?> 
                 <p class="success"><?= trans(':)') ?> <?= $checkoutMessage ?></p>  
         <?php endif; ?>
-    
 
     <div id="cartWrapper">
         <a id="cartLink" href="index.php" class="cartBtn"><?= trans('Back to index') ?></a>

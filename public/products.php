@@ -109,6 +109,7 @@ if (isset($_GET['edit'])) {
 
         <span><a id="cartLink" href="?logOut" class="cartBtn"><?= trans('Log out') ?></a></span>
         <span><a id="cartLink" href="product.php" class="cartBtn"><?= trans('Add product') ?></a></span>
+        <span><a id="cartLink" href="orders.php" class="cartBtn"><?= trans('Orders') ?></a></span>
 
     </div>
 

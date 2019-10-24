@@ -71,20 +71,20 @@ if (!$_SESSION['authenticated']) {
         } else {
             $imageErr = 'Please upload an image';
         }
-    }
-
+    
     //insert new product
-    if (isset($_POST['submit']) && empty($titleErr) && empty($descriptionErr) && empty($priceErr) && empty($imageErr)) {
+        if (empty($titleErr) && empty($descriptionErr) && empty($priceErr) && empty($imageErr)) {
 
-        $sql = 'INSERT INTO products(title, description, price, image) 
-        VALUES (:title, :description, :price, :image)';
+            $sql = 'INSERT INTO products(title, description, price, image) 
+            VALUES (:title, :description, :price, :image)';
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array('title' => $title, 'description' => $description, 'price' => $price, 'image' => $image));
-        header('Location: product.php?' . trans('success'));
-        die();
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(array('title' => $title, 'description' => $description, 'price' => $price, 'image' => $image));
+            header('Location: product.php?' . trans('success'));
+            die();
 
-    }
+        }
+    };
 
     //Update product
     if($_SESSION['edit']){
