@@ -7,7 +7,7 @@ if (!$_SESSION['authenticated']) {
     echo trans('You need to be a god to enter this page');
     die();
 
-} elseif ($_SESSION['authenticated'] == 1) {
+} else {
 
     $title = $description = $image = '';
     $price = null;

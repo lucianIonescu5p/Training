@@ -201,7 +201,7 @@ if(isset($_GET['mail_sent'])){
 
         </table>
     </div>
-    <?php print_r($_SESSION['cart']) ?>
+
         <form method="POST">
 
             <input id="nameInput" type="text" name="name" value="<?= $name; ?>" placeholder="<?= trans('Name ') ?>">
