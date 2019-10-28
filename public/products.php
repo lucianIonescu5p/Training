@@ -1,6 +1,6 @@
 <?php
 
-require_once 'common.php';
+require_once '../common.php';
 
 if (!$_SESSION['authenticated']) {
 
@@ -13,12 +13,11 @@ if (!$_SESSION['authenticated']) {
 
     $stmt = $conn->prepare($sql);
     $res = $stmt->execute();
-    $stmt->setFetchMode(PDO::FETCH_ASSOC);
     $rows = $stmt->fetchAll();
 
 }
 
-//Log out
+// Log out
 if (isset($_GET['logOut'])) {
 
     $_SESSION['authenticated'] = 0;
@@ -27,32 +26,30 @@ if (isset($_GET['logOut'])) {
 
 }
 
-//Delete product
+// Delete product
 if (isset($_GET['delete'])) {
     
-    $sql = 'SELECT * FROM products WHERE id = ' . $_GET['delete'];
+    $sql = 'SELECT * FROM products WHERE id = :id';
     $stmt = $conn->prepare($sql);
-    $res = $stmt->execute();
-    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $stmt->execute(['id' => $_GET['delete']]);
     $rows = $stmt->fetch();
 
     unlink('images/' . $rows['image']);
 
-    $deleteSql = 'DELETE FROM products WHERE id=' . $_GET['delete'];
+    $deleteSql = 'DELETE FROM products WHERE id = :id';
     $stmt = $conn->prepare($deleteSql);
-    $stmt->execute();
+    $stmt->execute(['id' => $_GET['delete']]);
 
     header('Location: products.php');
     die();
 }
 
-//Edit product
+// Edit product
 if (isset($_GET['edit'])) {
 
-    $sql = 'SELECT * FROM products WHERE id = ' . $_GET['edit'];
+    $sql = 'SELECT * FROM products WHERE id = :id';
     $stmt = $conn->prepare($sql);
-    $res = $stmt->execute();
-    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $stmt->execute(['id' => $_GET['edit']]);
     $rows = $stmt->fetch();
 
     $_SESSION['edit'] = true;
@@ -64,54 +61,54 @@ if (isset($_GET['edit'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?= trans('Products'); ?></title>
-    <link rel="stylesheet" href="main.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title><?= sanitize_input(trans('Products')); ?></title>
+        <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
 
-    <div>
+        <div>
 
-        <table border="1" cellpadding="3">
+            <table border="1" cellpadding="3">
 
-                <tr>
+                    <tr>
 
-                    <th align="middle"><?= trans('ID'); ?></th>
-                    <th align="middle"><?= trans('Title'); ?></th>
-                    <th align="middle"><?= trans('Description'); ?></th>
-                    <th align="middle"><?= trans('Price'); ?></th>
-                    <th align="middle"><?= trans('Edit'); ?></th>
-                    <th align="middle"><?= trans('Delete'); ?></th>
+                        <th align="middle"><?= sanitize_input(trans('ID')); ?></th>
+                        <th align="middle"><?= sanitize_input(trans('Title')); ?></th>
+                        <th align="middle"><?= sanitize_input(trans('Description')); ?></th>
+                        <th align="middle"><?= sanitize_input(trans('Price')); ?></th>
+                        <th align="middle"><?= sanitize_input(trans('Edit')); ?></th>
+                        <th align="middle"><?= sanitize_input(trans('Delete')); ?></th>
 
-                </tr>
+                    </tr>
 
-            <?php foreach($rows as $row): ?>
+                <?php foreach($rows as $row): ?>
 
-                <tr>
+                    <tr>
 
-                    <td align="middle"><img src="images/<?= $row['image'] ?>" width="70px" height="70px"></td>
-                    <td align="middle"><?= $row['title'] ?></td>
-                    <td align="middle"><?= $row['description'] ?></td>
-                    <td align="middle"><?= $row['price'] ?></td>
-                    <td align="middle"><a href="?edit=<?= $row['id']?>"><?= trans('Edit'); ?></a></td>
-                    <td align="middle"><a href="?delete=<?= $row['id']?>"><?= trans('Delete'); ?></a></td>
+                        <td align="middle"><img src="images/<?= sanitize_input($row['image']) ?>" width="70px" height="70px"></td>
+                        <td align="middle"><?= sanitize_input($row['title']) ?></td>
+                        <td align="middle"><?= sanitize_input($row['description']) ?></td>
+                        <td align="middle"><?= sanitize_input($row['price']) ?></td>
+                        <td align="middle"><a href="?edit=<?= sanitize_input($row['id']) ?>"><?= sanitize_input(trans('Edit')); ?></a></td>
+                        <td align="middle"><a href="?delete=<?= sanitize_input($row['id']) ?>"><?= sanitize_input(trans('Delete')); ?></a></td>
 
-                </tr>
-                
-            <?php endforeach; ?>  
-        </table>
-    </div>
+                    </tr>
+                    
+                <?php endforeach; ?>  
+            </table>
+        </div>
 
-    <div id="productsBtn">
+        <div class="productsBtn">
 
-        <span><a id="cartLink" href="?logOut" class="cartBtn"><?= trans('Log out') ?></a></span>
-        <span><a id="cartLink" href="product.php" class="cartBtn"><?= trans('Add product') ?></a></span>
-        <span><a id="cartLink" href="orders.php" class="cartBtn"><?= trans('Orders') ?></a></span>
+            <span><a class="cartLink" href="?logOut" ><?= sanitize_input(trans('Log out')) ?></a></span>
+            <span><a class="cartLink" href="product.php" ><?= sanitize_input(trans('Add product')) ?></a></span>
+            <span><a class="cartLink" href="orders.php" ><?= sanitize_input(trans('Orders')) ?></a></span>
 
-    </div>
+        </div>
 
-</body>
+    </body>
 </html>

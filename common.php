@@ -1,21 +1,16 @@
 <?php
+
 session_start();
 
 require_once 'config.php';
+require_once 'translations.php';
 
-$conn = new PDO("mysql:host=".SERVERNAME.";dbname=".DBNAME."", USERNAME, PASSWORD);
+$conn = new PDO("mysql:host=" . HOST . ";dbname=" . DB_NAME . "", DB_USERNAME, DB_PASSWORD);
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+$conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-//translation function
-function trans($label) 
-{
-    $translations = [
-        'ID' => '#'
-    ];
 
-    return isset($translations[$label]) ? $translations[$label] : $label;
-};
 
 //instantiate cart as an array
 if (empty($_SESSION['cart'])) {
@@ -25,8 +20,7 @@ if (empty($_SESSION['cart'])) {
 //data test function
 function sanitize_input($data) {
     
-    $data = trim($data);
-    $data = strip_tags($data);
+    $data = htmlspecialchars($data);
 
     return $data;
   }

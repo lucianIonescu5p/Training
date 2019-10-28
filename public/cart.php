@@ -1,16 +1,15 @@
 <?php
 
-require_once 'common.php';
+require_once '../common.php';
 
-$empty = trans('Cart is empty');
 
-//remove items from the cart
-if (isset($_GET['id'])) 
-{
+
+// remove items from the cart
+if (isset($_GET['id'])) {
 
     $key = array_search($_GET['id'], $_SESSION['cart']);  
 
-    if($key !== false){
+    if ($key !== false) {
 
         unset($_SESSION['cart'][$key]); 
         header('Location: cart.php'); 
@@ -35,16 +34,16 @@ $sql =
 
 $stmt = $conn->prepare($sql);
 $res = $stmt->execute(array_values($_SESSION['cart']));
-$stmt->setFetchMode(PDO::FETCH_ASSOC);
 $rows = $stmt->fetchAll();
 
-//form checkout
+// form checkout
 $name = $contactDetails = $comments = '';
 $nameErr = $contactDetailsErr = $cartErr = '';
 $totalPrice = 0;
-//validation
-if (isset($_POST['checkout'])) 
-{
+
+// validation
+if (isset($_POST['checkout'])) {
+
     if (empty($_POST['name'])) {
         $nameErr = trans('Name is required');
     } else {
@@ -58,77 +57,72 @@ if (isset($_POST['checkout']))
 
     $comments = sanitize_input($_POST['comments']);
 
-    if(empty($_SESSION['cart'])){
+    if (empty($_SESSION['cart'])) {
         $cartErr = trans('Cart is empty');
     } 
 }
 
 //mail 
-if (isset($_POST['checkout']) && empty($nameErr) && empty($contactDetailsErr) && empty($cartErr))
-{
+if (isset($_POST['checkout']) && empty($nameErr) && empty($contactDetailsErr) && empty($cartErr)) {
 
-    $to = SHOPMANAGER;
-    $subject = trans('New order!');
     $headers = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type:text/html; charset=UTF-8' . "\r\n";
-    $headers .= 'From: <' . trans($contactDetails) . '>' . "\r\n";
+    $headers .= 'From: <' . sanitize_input(trans($contactDetails)) . '>' . "\r\n";
 
     $message = '
         <html>
             <head>
-                <title>' . trans('Order') . '</title>
+                <title>' . sanitize_input(trans('Order')) . '</title>
             </head>
             <body>
 
-                <p>' . trans('Hello, here\'s an order from') . ' ' . htmlspecialchars($name) . '</p>
-                <p>At ' . date('d/M/Y H:i:s') . '</p>
-                <p>' . trans('Order details are:') . '</p>
+                <p>' . sanitize_input(trans('Hello, here\'s an order from')) . ' ' . sanitize_input($name) . '</p>
+                <p>At ' . sanitize_input(date('d/M/Y H:i:s')) . '</p>
+                <p>' . sanitize_input(trans('Order details are:')) . '</p>
 
                 <table border="1" cellpadding="3">
 
-            <tr>
-                <th align="middle">' . trans('Product') . ' </th>
-                <th align="middle">' . trans('Name') . ' </th>
-                <th align="middle">' . trans('Description') . ' </th>
-                <th align="middle">' . trans('Price') . ' </th>
-
-            </tr> ';
-
-            foreach ($rows as $row) {
-                $totalPrice += $row['price'];
-                $message .= ' 
                     <tr>
-                        <td align="middle"><img src="' . (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . '/images/' . $row['image'] . '" width="70px" height="70px"></td>
-                        <td align="middle">' . $row['title'] . '</td>
-                        <td align="middle">' . $row['description'] . '</td>
-                        <td align="middle">' . $row['price'] . '</td>
+                        <th align="middle">' . sanitize_input(trans('Product')) . ' </th>
+                        <th align="middle">' . sanitize_input(trans('Name')) . ' </th>
+                        <th align="middle">' . sanitize_input(trans('Description')) . ' </th>
+                        <th align="middle">' . sanitize_input(trans('Price')) . ' </th>
+        
                     </tr> ';
-            }
+
+                    foreach ($rows as $row) {
+                        $totalPrice += $row['price'];
+                        $message .= ' 
+                            <tr>
+                                <td align="middle"><img src="' . (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . '/images/' . $row['image'] . '" width="70px" height="70px"></td>
+                                <td align="middle">' . sanitize_input($row['title']) . '</td>
+                                <td align="middle">' . sanitize_input($row['description']) . '</td>
+                                <td align="middle">' . sanitize_input($row['price']) . '</td>
+                            </tr> ';
+                    }
                 $message .= ' 
                     <tr>
-                        <td colspan=3 align="middle"><b>' . trans('Total price') . '</b></td>
-                        <td align="middle"><b>' . $totalPrice . '</b></td>
+                        <td colspan=3 align="middle"><b>' . sanitize_input(trans('Total price')) . '</b></td>
+                        <td align="middle"><b>' . sanitize_input($totalPrice) . '</b></td>
                     </tr>
                 </table>
-                <p> ' . trans('Contact details:') . ' ' . htmlspecialchars($contactDetails) . '</p>
-                <p> ' . trans('Additional messages:') . ' ' . htmlspecialchars($comments) . '</p>
+                <p> ' . sanitize_input(trans('Contact details:')) . ' ' . sanitize_input($contactDetails) . '</p>
+                <p> ' . sanitize_input(trans('Additional messages:')) . ' ' . sanitize_input($comments) . '</p>
             </body>
         </html> ';
 
-    mail($to, $subject, $message, $headers);
+    mail(SHOP_MANAGER, trans('New order!'), $message, $headers);
 
     //log orders
-    $sql = 'INSERT INTO orders(name, contact_details, price) 
-    VALUES (:name, :contact_details, :price)';
+    $sql = 'INSERT INTO orders(name, contact_details, price) VALUES (:name, :contact_details, :price)';
 
     $stmt = $conn->prepare($sql);
     $stmt->execute(array('name' => $name, 'contact_details' => $contactDetails, 'price' => $totalPrice));
     $last_id = $conn->lastInsertId();
 
-    foreach($_SESSION['cart'] as $product){
+    foreach ($_SESSION['cart'] as $product) {
 
-        $sql = 'INSERT INTO order_product(order_id ,product_id) 
-        VALUES (:order_id, :product_id)';
+        $sql = 'INSERT INTO order_product(order_id ,product_id) VALUES (:order_id, :product_id)';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':order_id' => $last_id, ':product_id' => $product));
@@ -140,7 +134,7 @@ if (isset($_POST['checkout']) && empty($nameErr) && empty($contactDetailsErr) &&
 
 }
 
-if(isset($_GET['mail_sent'])){
+if (isset($_GET['mail_sent'])) {
 
     $checkoutMessage = trans('Your order was sent succesfully');
     $_SESSION['cart'] = array();
@@ -153,73 +147,77 @@ if(isset($_GET['mail_sent'])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?= trans('Cart') ?></title>
+    <title><?= sanitize_input(trans('Cart')) ?></title>
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
 
     <div id="cartContainer">
 
-        <p><u><?= trans('Cart details:') ?></u></p>
-
-        <table border="1" cellpadding="3">
+        <?php if (empty($_SESSION['cart'])) : ?>
 
             <tr>
-                <th align="middle"><?= trans('Product') ?></th>
-                <th align="middle"><?= trans('Name') ?></th>
-                <th align="middle"><?= trans('Description') ?></th>
-                <th align="middle"><?= trans('Price') ?></th>
-                <th align="middle"><?= trans('Remove from cart') ?></th>
+                <td colspan=5 align="middle"><?= sanitize_input(trans('Cart is empty')); ?></td>
             </tr>
 
-            <?php if(empty($_SESSION['cart'])): ?>
+        <?php else : ?>
+            <p><u><?= sanitize_input(trans('Cart details:')) ?></u></p>
 
-            <tr>
-                <td colspan=5 align="middle"><?= $empty; ?></td>
-            </tr>
-
-            <?php else: ?>
-            <?php foreach($rows as $row): ?>
-            <?php $totalPrice += $row['price']; ?>
+            <table border="1" cellpadding="3">
 
                 <tr>
-                    <td align="middle"><img src="images/<?= $row['image'] ?>" width="70px" height="70px"></td>
-                    <td align="middle"><?= $row['title'] ?></td>
-                    <td align="middle"><?= $row['description'] ?></td>
-                    <td align="middle"><?= $row['price'] ?></td>
-                    <td align="middle"><a href="?id=<?= $row['id']?>"><?= trans('Remove') ?></a></td>
+                    <th align="middle"><?= sanitize_input(trans('Product')) ?></th>
+                    <th align="middle"><?= sanitize_input(trans('Name')) ?></th>
+                    <th align="middle"><?= sanitize_input(trans('Description')) ?></th>
+                    <th align="middle"><?= sanitize_input(trans('Price')) ?></th>
+                    <th align="middle"><?= sanitize_input(trans('Remove from cart')) ?></th>
                 </tr>
 
-            <?php endforeach; ?>
-            <?php endif; ?>
+                <?php foreach ($rows as $row) : ?>
+                <?php $totalPrice += $row['price']; ?>
+
+                    <tr>
+                        <td align="middle"><img src="images/<?= sanitize_input($row['image']) ?>" width="70px" height="70px"></td>
+                        <td align="middle"><?= sanitize_input($row['title']) ?></td>
+                        <td align="middle"><?= sanitize_input($row['description']) ?></td>
+                        <td align="middle"><?= sanitize_input($row['price']) ?></td>
+                        <td align="middle"><a href="?id=<?= sanitize_input($row['id'])?>"><?= trans('Remove') ?></a></td>
+                    </tr>
+
+                <?php endforeach ?>
 
                 <tr>
-                    <td colspan=3 align="middle"><b><?= trans('Total price') ?></b></td>
-                    <td align="middle"><b><?= $totalPrice; ?></b></td>
-                    <td align="middle">:)</td>
+                    <td colspan=3 align="middle"><b><?= sanitize_input(trans('Total price')) ?></b></td>
+                    <td colspan=2 align="middle"><b><?= sanitize_input($totalPrice) ?></b></td>
                 </tr>
 
-        </table>
-    </div>
+            </table>
+            </div>
 
-        <form method="POST">
+                <form method="POST">
 
-            <input id="nameInput" type="text" name="name" value="<?= $name; ?>" placeholder="<?= trans('Name ') ?>">
-            <span class="error"> *<?= $nameErr; ?></span><br /> 
-            <input type="email" name="contactDetails" placeholder="<?= trans('Email Address') ?>" value="<?= $contactDetails ?>">
-            <span class="error"> *<?= $contactDetailsErr; ?></span> <br /> 
-            <textarea rows="4" cols="50" name="comments" value="" placeholder="<?= trans('Comment') ?>"><?= $comments ?></textarea> <br />
-            <input type="submit" name="checkout" value="<?= trans('Checkout') ?>">
-            <span class="error"><?=$cartErr ?></span>
+                    <input type="text" name="name" value="<?= $name; ?>" placeholder="<?= sanitize_input(trans('Name ')) ?>">
+                    <span class="error"><?= $nameErr; ?></span><br /> 
 
-        </form>
+                    <input type="email" name="contactDetails" placeholder="<?= sanitize_input(trans('Email Address')) ?>" value="<?= sanitize_input($contactDetails) ?>">
+                    <span class="error"><?= sanitize_input($contactDetailsErr) ?></span> <br /> 
 
-        <?php if(isset($_GET['mail_sent'])): ?> 
-                <p class="success"><?= trans(':)') ?> <?= $checkoutMessage ?></p>  
-        <?php endif; ?>
+                    <textarea rows="4" cols="50" name="comments" placeholder="<?= sanitize_input(trans('Comment')) ?>"><?= sanitize_input($comments) ?></textarea> <br />
 
-    <div id="cartWrapper">
-        <a id="cartLink" href="index.php" class="cartBtn"><?= trans('Back to index') ?></a>
+                    <input type="submit" name="checkout" value="<?= sanitize_input(trans('Checkout')) ?>">
+
+                    <span class="error"><?= sanitize_input($cartErr) ?></span>
+
+                </form>
+
+                <?php if (isset($_GET['mail_sent'])) : ?>
+                        <p class="success"><?= sanitize_input($checkoutMessage) ?></p>  
+                <?php endif ?>
+
+        <?php endif ?>
+
+    <div class="cartWrapper">
+        <a class="cartLink cartBtn" href="index.php"><?= sanitize_input(trans('Back to index')) ?></a>
     </div>
    
 </body>

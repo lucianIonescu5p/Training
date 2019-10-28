@@ -1,11 +1,11 @@
 <?php
-require_once 'common.php';
+
+require_once '../common.php';
 
 $sql = 'SELECT * FROM orders';
 
 $stmt = $conn->prepare($sql);
 $res = $stmt->execute();
-$stmt->setFetchMode(PDO::FETCH_ASSOC);
 $rows = $stmt->fetchAll();
 
 ?>
@@ -15,20 +15,22 @@ $rows = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?= trans('Orders') ?></title>
+    <title><?= sanitize_input(trans('Orders')) ?></title>
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
 
     <ul>
         <?php foreach($rows as $row): ?>
-            <li><?= trans('Order id: ') . $row['id'] . trans('; Name: ') . $row['name'] . trans('; E-mail: ') . $row['contact_details'] . trans('; Price: ') . $row['price'] . trans('; Date: ') . $row['date']?> </li>
+            <li><?= sanitize_input(trans('Order id: ')) . sanitize_input($row['id']) . sanitize_input(trans('; Name: ')) . sanitize_input($row['name']) . 
+                    sanitize_input(trans('; E-mail: ')) . sanitize_input($row['contact_details']) . 
+                    sanitize_input(trans('; Price: ')) . sanitize_input($row['price']) . sanitize_input(trans('; Date: ')) . sanitize_input($row['date']) ?> </li> <br />
         <?php endforeach; ?>
     </ul>
     
-    <div id="productsBtn">
+    <div class="productsBtn">
 
-        <span><a id="cartLink" href="products.php" class="cartBtn"><?= trans('Back') ?></a></span>
+        <span><a class="cartLink cartBtn" href="products.php"><?= sanitize_input(trans('Back')) ?></a></span>
 
     </div>
 
