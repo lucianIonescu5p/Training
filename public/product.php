@@ -4,7 +4,7 @@ require_once '../common.php';
 
 if (!$_SESSION['authenticated']) {
 
-    echo trans('You need to be a god to enter this page');
+    header('Location: login.php');
     die();
 
 } else {
@@ -126,47 +126,39 @@ if (!$_SESSION['authenticated']) {
 
     }
 }
+
+$pageTitle = trans('Product');
+include('../header.php');
+
 ?>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title><?= trans(sanitize_input('Product')); ?></title>
-        <link rel="stylesheet" href="main.css">
-    </head>
-    <body>
-        
-        <form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data">
 
-            <?php if(isset($_GET['success'])): ?>
-            <p class="success"><?= trans('Product updated') ?></p>
-            <?php endif; ?>
+    <?php if(isset($_GET['success'])): ?>
+    <p class="success"><?= trans('Product updated') ?></p>
+    <?php endif; ?>
 
-            <input type="text" name="title" value="<?= sanitize_input($title) ?>" placeholder="<?= trans(sanitize_input('Insert product title')); ?>">
-            <span class="error"> <?= $titleErr; ?></span><br />
+    <input type="text" name="title" value="<?= sanitize_input($title) ?>" placeholder="<?= trans(sanitize_input('Insert product title')); ?>">
+    <span class="error"> <?= $titleErr; ?></span><br />
 
-            <input type="text" name="description" value="<?= sanitize_input($description) ?>" placeholder="<?= trans(sanitize_input('Insert product description')); ?>">
-            <span class="error"> <?= $descriptionErr; ?></span><br />
+    <input type="text" name="description" value="<?= sanitize_input($description) ?>" placeholder="<?= trans(sanitize_input('Insert product description')); ?>">
+    <span class="error"> <?= $descriptionErr; ?></span><br />
 
-            <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= trans(sanitize_input('Insert product price')); ?>">
-            <span class="error"> <?= $priceErr; ?></span><br />
+    <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= trans(sanitize_input('Insert product price')); ?>">
+    <span class="error"> <?= $priceErr; ?></span><br />
 
-            <input type="file" name="image" placeholder="<?= trans(sanitize_input('Insert product image')); ?>" ><img src="<?=sanitize_input($rows['image']) ?>"/>
-            <span class="error"> <?= $imageErr; ?></span><br />
+    <input type="file" name="image" placeholder="<?= trans(sanitize_input('Insert product image')); ?>" ><img src="<?=sanitize_input($rows['image']) ?>"/>
+    <span class="error"> <?= $imageErr; ?></span><br />
 
-            <?php if ($_SESSION['edit']) : ?>
-                <input type="submit" name="update" value="<?= trans(sanitize_input('Update product')); ?>">
-            <?php else : ?>
-                <input type="submit" name="submit" value="<?= trans(sanitize_input('Add product')); ?>">
-            <?php endif ?>
+    <?php if ($_SESSION['edit']) : ?>
+        <input type="submit" name="update" value="<?= trans(sanitize_input('Update product')); ?>">
+    <?php else : ?>
+        <input type="submit" name="submit" value="<?= trans(sanitize_input('Add product')); ?>">
+    <?php endif ?>
             
-        </form>
+</form>
 
-        <br />
+<br />
 
-        <a class="cartLink cartBtn" href="?products" ><?= trans(sanitize_input('Products')) ?></a>
+<a class="cartLink cartBtn" href="?products" ><?= trans(sanitize_input('Products')) ?></a>
 
-    </body>
-</html>
+<?php include('../footer.php') ?>

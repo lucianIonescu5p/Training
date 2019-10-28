@@ -4,7 +4,7 @@ require_once '../common.php';
 
 if (!$_SESSION['authenticated']) {
 
-    echo trans('You need to be a god to enter this page');
+    header('Location: login.php');
     die();
 
 } elseif ($_SESSION['authenticated']) {
@@ -58,57 +58,49 @@ if (isset($_GET['edit'])) {
     header('Location: product.php?edit=' . $_SESSION['id']);
     die();
 }
+
+$pageTitle = trans('Products');
+include('../header.php');
+
 ?>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title><?= sanitize_input(trans('Products')); ?></title>
-        <link rel="stylesheet" href="main.css">
-    </head>
-    <body>
+<div>
 
-        <div>
+    <table border="1" cellpadding="3">
 
-            <table border="1" cellpadding="3">
+            <tr>
 
-                    <tr>
+                <th align="middle"><?= sanitize_input(trans('ID')); ?></th>
+                <th align="middle"><?= sanitize_input(trans('Title')); ?></th>
+                <th align="middle"><?= sanitize_input(trans('Description')); ?></th>
+                <th align="middle"><?= sanitize_input(trans('Price')); ?></th>
+                <th align="middle"><?= sanitize_input(trans('Edit')); ?></th>
+                <th align="middle"><?= sanitize_input(trans('Delete')); ?></th>
 
-                        <th align="middle"><?= sanitize_input(trans('ID')); ?></th>
-                        <th align="middle"><?= sanitize_input(trans('Title')); ?></th>
-                        <th align="middle"><?= sanitize_input(trans('Description')); ?></th>
-                        <th align="middle"><?= sanitize_input(trans('Price')); ?></th>
-                        <th align="middle"><?= sanitize_input(trans('Edit')); ?></th>
-                        <th align="middle"><?= sanitize_input(trans('Delete')); ?></th>
+            </tr>
 
-                    </tr>
+        <?php foreach($rows as $row): ?>
 
-                <?php foreach($rows as $row): ?>
+            <tr>
 
-                    <tr>
+                <td align="middle"><img src="images/<?= sanitize_input($row['image']) ?>" width="70px" height="70px"></td>
+                <td align="middle"><?= sanitize_input($row['title']) ?></td>
+                <td align="middle"><?= sanitize_input($row['description']) ?></td>
+                <td align="middle"><?= sanitize_input($row['price']) ?></td>
+                <td align="middle"><a href="?edit=<?= sanitize_input($row['id']) ?>"><?= sanitize_input(trans('Edit')); ?></a></td>
+                <td align="middle"><a href="?delete=<?= sanitize_input($row['id']) ?>"><?= sanitize_input(trans('Delete')); ?></a></td>
 
-                        <td align="middle"><img src="images/<?= sanitize_input($row['image']) ?>" width="70px" height="70px"></td>
-                        <td align="middle"><?= sanitize_input($row['title']) ?></td>
-                        <td align="middle"><?= sanitize_input($row['description']) ?></td>
-                        <td align="middle"><?= sanitize_input($row['price']) ?></td>
-                        <td align="middle"><a href="?edit=<?= sanitize_input($row['id']) ?>"><?= sanitize_input(trans('Edit')); ?></a></td>
-                        <td align="middle"><a href="?delete=<?= sanitize_input($row['id']) ?>"><?= sanitize_input(trans('Delete')); ?></a></td>
-
-                    </tr>
+            </tr>
                     
-                <?php endforeach; ?>  
-            </table>
-        </div>
+        <?php endforeach; ?>  
+    </table>
+</div>
 
-        <div class="productsBtn">
+<div class="productsBtn">
 
-            <span><a class="cartLink" href="?logOut" ><?= sanitize_input(trans('Log out')) ?></a></span>
-            <span><a class="cartLink" href="product.php" ><?= sanitize_input(trans('Add product')) ?></a></span>
-            <span><a class="cartLink" href="orders.php" ><?= sanitize_input(trans('Orders')) ?></a></span>
+    <span><a class="cartLink" href="?logOut" ><?= sanitize_input(trans('Log out')) ?></a></span>
+    <span><a class="cartLink" href="product.php" ><?= sanitize_input(trans('Add product')) ?></a></span>
+    <span><a class="cartLink" href="orders.php" ><?= sanitize_input(trans('Orders')) ?></a></span>
 
-        </div>
+</div>
 
-    </body>
-</html>
+<?php include('../footer.php') ?>
