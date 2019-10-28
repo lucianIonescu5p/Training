@@ -2,9 +2,9 @@
 
 require_once '../common.php';
 
-
-
-// remove items from the cart
+/** remove items from the cart
+ *
+ */
 if (isset($_GET['id'])) {
 
     $key = array_search($_GET['id'], $_SESSION['cart']);  
@@ -36,12 +36,16 @@ $stmt = $conn->prepare($sql);
 $res = $stmt->execute(array_values($_SESSION['cart']));
 $rows = $stmt->fetchAll();
 
-// form checkout
+/** form checkout
+ *
+ */
 $name = $contactDetails = $comments = '';
 $nameErr = $contactDetailsErr = $cartErr = '';
 $totalPrice = 0;
 
-// validation
+/** validation
+ *
+ */
 if (isset($_POST['checkout'])) {
 
     if (empty($_POST['name'])) {
@@ -62,7 +66,9 @@ if (isset($_POST['checkout'])) {
     } 
 }
 
-//mail 
+/** mail
+ *
+ */
 if (isset($_POST['checkout']) && empty($nameErr) && empty($contactDetailsErr) && empty($cartErr)) {
 
     $headers = 'MIME-Version: 1.0' . "\r\n";
@@ -113,7 +119,9 @@ if (isset($_POST['checkout']) && empty($nameErr) && empty($contactDetailsErr) &&
 
     mail(SHOP_MANAGER, trans('New order!'), $message, $headers);
 
-    //log orders
+    /** log orders
+     *
+     */
     $sql = 'INSERT INTO orders(name, contact_details, price) VALUES (:name, :contact_details, :price)';
 
     $stmt = $conn->prepare($sql);

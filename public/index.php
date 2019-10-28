@@ -2,7 +2,9 @@
 
 require_once '../common.php';
 
-// add items to the cart
+/** add items to the cart
+ *
+ */
 if (isset($_GET['id'])) {
     array_push($_SESSION['cart'], $_GET['id']);
     header("Location: index.php");
@@ -56,7 +58,7 @@ include('../header.php');
             <?php foreach($rows as $row): ?>
 
                 <tr>
-                    <td align="middle"><img src="images/<?= sanitize_input($row['image']) ?>" width="70px" height="70px"></td>
+                    <td align="middle"><img alt ="<?= sanitize_input(trans('Product image')) ?>" src="images/<?= sanitize_input($row['image']) ?>" width="70px" height="70px"></td>
                     <td align="middle"><?= sanitize_input($row['title']) ?></td>
                     <td align="middle"><?= sanitize_input($row['description']) ?></td>
                     <td align="middle"><?= sanitize_input($row['price']) ?></td>

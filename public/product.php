@@ -14,7 +14,9 @@ if (!$_SESSION['authenticated']) {
 
     $titleErr = $descriptionErr = $priceErr = $imageErr = '';
 
-    // data validation
+    /** data validation
+     *
+     */
     if (isset($_POST['submit']) || isset($_POST['update'])) {
 
         if (empty($_POST['title'])) {
@@ -39,7 +41,9 @@ if (!$_SESSION['authenticated']) {
         
         if (empty($_POST['image'])) {
 
-            // image validation
+            /** image validation
+             *
+             */
             $file = $_FILES['image'];
             $fileName = $_FILES['image']['name'];
             $fileTmp = $_FILES['image']['tmp_name'];
@@ -73,8 +77,10 @@ if (!$_SESSION['authenticated']) {
         } else {
             $imageErr = trans('Please upload an image');
         }
-    
-    // insert new product
+
+        /** insert new product
+         *
+         */
         if (empty($titleErr) && empty($descriptionErr) && empty($priceErr) && empty($imageErr)) {
 
             $sql = 'INSERT INTO products(title, description, price, image) VALUES (:title, :description, :price, :image)';
@@ -87,7 +93,9 @@ if (!$_SESSION['authenticated']) {
         }
     };
 
-    // Update product
+    /** Update product
+     *
+     */
     if(isset($_SESSION['edit']) && $_SESSION['edit']){
 
         $sql = 'SELECT * FROM products WHERE id = ' . $_SESSION['id'];
@@ -117,7 +125,9 @@ if (!$_SESSION['authenticated']) {
 
     }
 
-    // Return to products.php
+    /** Return to products.php
+     *
+     */
     if (isset($_GET['products'])) {
 
         $_SESSION['edit'] = false;

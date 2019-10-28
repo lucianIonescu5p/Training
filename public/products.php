@@ -17,7 +17,9 @@ if (!$_SESSION['authenticated']) {
 
 }
 
-// Log out
+/** Log out
+ *
+ */
 if (isset($_GET['logOut'])) {
 
     $_SESSION['authenticated'] = 0;
@@ -26,7 +28,9 @@ if (isset($_GET['logOut'])) {
 
 }
 
-// Delete product
+/** Delete product
+ *
+ */
 if (isset($_GET['delete'])) {
     
     $sql = 'SELECT * FROM products WHERE id = :id';
@@ -44,7 +48,9 @@ if (isset($_GET['delete'])) {
     die();
 }
 
-// Edit product
+/** Edit product
+ *
+ */
 if (isset($_GET['edit'])) {
 
     $sql = 'SELECT * FROM products WHERE id = :id';

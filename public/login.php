@@ -5,8 +5,9 @@ require_once '../common.php';
 $name = $password = '';
 $nameErr = $passwordErr = '';
 
-
-// validation
+/** validation
+ *
+ */
 if (isset($_POST['submit']))
 {
     if($_POST['username'] === ADMIN_NAME){
