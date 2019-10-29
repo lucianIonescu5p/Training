@@ -40,8 +40,9 @@ $rows = $stmt->fetchAll();
  *
  */
 $name = $contactDetails = $comments = '';
-$nameErr = $contactDetailsErr = $cartErr = '';
 $totalPrice = 0;
+
+$errors = [];
 
 /** validation
  *
@@ -49,27 +50,35 @@ $totalPrice = 0;
 if (isset($_POST['checkout'])) {
 
     if (empty($_POST['name'])) {
-        $nameErr = trans('Name is required');
+
+        array_fill_keys($errors, trans('name'));
+        $errors['name'] = trans('Name is required');
+
     } else {
-        $name = sanitize_input($_POST['name']);
-    }
+        $name = $_POST['name'];
+    };
+
     if (empty($_POST['contactDetails'])) {
-        $contactDetailsErr = trans('E-mail is required');
+
+        array_fill_keys($errors, trans('eMail'));
+        $errors['eMail'] = trans('E-mail is required');
+
+    } else if (!filter_var($_POST['contactDetails'], FILTER_VALIDATE_EMAIL)) {
+
+        array_fill_keys($errors, trans('eMail'));
+        $errors['eMail'] = trans('Invalid email format, try someone@example.com');
+
     } else {
-        $contactDetails = sanitize_input($_POST['contactDetails']);
+        $contactDetails = $_POST['contactDetails'];
     }
 
-    $comments = sanitize_input($_POST['comments']);
-
-    if (empty($_SESSION['cart'])) {
-        $cartErr = trans('Cart is empty');
-    } 
+    $comments = $_POST['comments'];
 }
 
 /** mail
  *
  */
-if (isset($_POST['checkout']) && empty($nameErr) && empty($contactDetailsErr) && empty($cartErr)) {
+if (isset($_POST['checkout']) && empty($errors)) {
 
     $headers = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type:text/html; charset=UTF-8' . "\r\n";
@@ -197,24 +206,32 @@ include('../header.php');
 
             <form method="POST">
 
-                <input type="text" name="name" value="<?= $name; ?>" placeholder="<?= sanitize_input(trans('Name ')) ?>">
-                <span class="error"><?= $nameErr; ?></span><br /> 
+                <input type="text" name="name" value="<?= $name; ?>" placeholder="<?= sanitize_input(trans('Name ')) ?>"><br /> 
 
-                <input type="email" name="contactDetails" placeholder="<?= sanitize_input(trans('Email Address')) ?>" value="<?= sanitize_input($contactDetails) ?>">
-                <span class="error"><?= sanitize_input($contactDetailsErr) ?></span> <br /> 
+                <input type="text" name="contactDetails" placeholder="<?= sanitize_input(trans('Email Address')) ?>" value="<?= sanitize_input($contactDetails) ?>"><br /> 
 
                 <textarea rows="4" cols="50" name="comments" placeholder="<?= sanitize_input(trans('Comment')) ?>"><?= sanitize_input($comments) ?></textarea> <br />
 
                 <input type="submit" name="checkout" value="<?= sanitize_input(trans('Checkout')) ?>">
 
-                <span class="error"><?= sanitize_input($cartErr) ?></span>
-
             </form>
 
-            <?php if (isset($_GET['mail_sent'])) : ?>
-                    <p class="success"><?= sanitize_input($checkoutMessage) ?></p>  
+            <?php if (!empty($errors)) : ?>
+
+                <div class="errorBox">
+                    <ul>
+                        <?php foreach ($errors as $error) : ?>
+                                <li class="errorTxt"><?= sanitize_input($error) ?></li>
+                        <?php endforeach ?>
+                    </ul>
+                </div>
+
             <?php endif ?>
 
+    <?php endif ?>
+
+    <?php if (isset($_GET['mail_sent'])) : ?>
+        <p class="success"><?= sanitize_input($checkoutMessage) ?></p>  
     <?php endif ?>
 
 <div class="cartWrapper">

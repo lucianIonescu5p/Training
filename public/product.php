@@ -4,7 +4,7 @@ require_once '../common.php';
 
 if (!$_SESSION['authenticated']) {
 
-    header('Location: login.php');
+    header('Location: login.php?unauthorized');
     die();
 
 } else {
@@ -12,7 +12,7 @@ if (!$_SESSION['authenticated']) {
     $title = $description = $image = '';
     $price = null;
 
-    $titleErr = $descriptionErr = $priceErr = $imageErr = '';
+    $errors = [];
 
     /** data validation
      *
@@ -20,31 +20,38 @@ if (!$_SESSION['authenticated']) {
     if (isset($_POST['submit']) || isset($_POST['update'])) {
 
         if (empty($_POST['title'])) {
-            $titleErr = trans('Please insert a title');
+            array_fill_keys($errors, 'title');
+            $errors['title'] = [trans('Please insert a title')];
         } else {
             $title = $_POST['title'];
         };
 
         if (empty($_POST['description'])) {
-            $descriptionErr = trans('Please insert a description');
+            array_fill_keys($errors, 'description');
+            $errors['description'] = [trans('Please insert a description')];
         } else {
             $description = $_POST['description'];
         };
 
         if (empty($_POST['price'])) {
-            $priceErr = trans('Please specify a \'real\' price');
+
+            array_fill_keys($errors, 'price');
+            $errors['price'] = [trans('Please insert a price')];
+
         } elseif ($_POST['price'] < 0) {
-            $priceErr = trans("Please enter a positive integer value.");
+
+            array_fill_keys($errors, 'price');
+            $errors['price'] = [trans('Please enter a positive integer value.')];
+
         } else {
             $price = $_POST['price'];
         }
         
-        if (empty($_POST['image'])) {
+        if (!$_FILES['image']) {
 
             /** image validation
              *
              */
-            $file = $_FILES['image'];
             $fileName = $_FILES['image']['name'];
             $fileTmp = $_FILES['image']['tmp_name'];
             $fileSize = $_FILES['image']['size'];
@@ -57,7 +64,6 @@ if (!$_SESSION['authenticated']) {
             $allowed = array('jpg', 'jpeg', 'png', 'gif');
 
             if (in_array($fileActualExt, $allowed)) {
-
                 if ($fileError === 0) {
                     if($fileSize < 150000) {
 
@@ -66,22 +72,34 @@ if (!$_SESSION['authenticated']) {
                         move_uploaded_file($fileTmp, $fileDestination);
 
                     } else {
-                        $imageErr = trans('File too big!');
-                    }
-                } else {
-                    $imageErr = trans('Sorry, there was an error uploading the image');
-                }
-            } else {
-                $imageErr = trans('You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.');
-            }
-        } else {
-            $imageErr = trans('Please upload an image');
-        }
 
+                        array_fill_keys($errors, 'image');
+                        $errors['image'] = [trans('File too big!')];
+                        
+                    };
+                } else {
+
+                    array_fill_keys($errors, 'image');
+                    $errors['image'] = [trans('Sorry, there was an error uploading the image')];
+
+                };
+            } else {
+
+                array_fill_keys($errors, 'image');
+                $errors['image'] = [trans('You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.')];
+                
+            };
+        } else {
+
+            array_fill_keys($errors, 'image');
+            $errors['image'] = [trans('Please upload an image')];
+
+        }
+print_r($errors);
         /** insert new product
          *
          */
-        if (empty($titleErr) && empty($descriptionErr) && empty($priceErr) && empty($imageErr)) {
+        if (empty($errors)) {
 
             $sql = 'INSERT INTO products(title, description, price, image) VALUES (:title, :description, :price, :image)';
 
@@ -98,19 +116,18 @@ if (!$_SESSION['authenticated']) {
      */
     if(isset($_SESSION['edit']) && $_SESSION['edit']){
 
-        $sql = 'SELECT * FROM products WHERE id = ' . $_SESSION['id'];
+        $sql = 'SELECT * FROM products WHERE id = ?';
         $stmt = $conn->prepare($sql);
-        $res = $stmt->execute();
+        $res = $stmt->execute([$_SESSION['id']]);
         $rows = $stmt->fetch();
 
         $title = $rows['title'];
         $description = $rows['description'];
         $price = $rows['price'];
-    
 
     }
 
-    if (isset($_POST['update']) && empty($titleErr) && empty($descriptionErr) && empty($priceErr) && empty($imageErr)) {
+    if (isset($_POST['update']) && empty($errors)) {
 
         $sql = 'UPDATE products SET title = ?, description = ?, price = ?, image = ? WHERE products.id = ?';
         $stmt = $conn->prepare($sql);
@@ -147,25 +164,41 @@ include('../header.php');
     <p class="success"><?= trans('Product updated') ?></p>
     <?php endif; ?>
 
-    <input type="text" name="title" value="<?= sanitize_input($title) ?>" placeholder="<?= trans(sanitize_input('Insert product title')); ?>">
-    <span class="error"> <?= $titleErr; ?></span><br />
+    <input type="text" name="title" value="<?= sanitize_input($title) ?>" placeholder="<?= trans(sanitize_input('Insert product title')); ?>"> <br />
 
-    <input type="text" name="description" value="<?= sanitize_input($description) ?>" placeholder="<?= trans(sanitize_input('Insert product description')); ?>">
-    <span class="error"> <?= $descriptionErr; ?></span><br />
+    <input type="text" name="description" value="<?= sanitize_input($description) ?>" placeholder="<?= trans(sanitize_input('Insert product description')); ?>"> <br />
+    
 
-    <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= trans(sanitize_input('Insert product price')); ?>">
-    <span class="error"> <?= $priceErr; ?></span><br />
-
-    <input type="file" name="image" placeholder="<?= trans(sanitize_input('Insert product image')); ?>" ><img src="<?=sanitize_input($rows['image']) ?>"/>
-    <span class="error"> <?= $imageErr; ?></span><br />
-
+    <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= trans(sanitize_input('Insert product price')); ?>"> <br />
+    
+    <input type="file" name="image" placeholder="<?= trans(sanitize_input('Insert product image')); ?>" ><br />
+    
     <?php if ($_SESSION['edit']) : ?>
         <input type="submit" name="update" value="<?= trans(sanitize_input('Update product')); ?>">
     <?php else : ?>
         <input type="submit" name="submit" value="<?= trans(sanitize_input('Add product')); ?>">
     <?php endif ?>
-            
-</form>
+
+    <?php if (isset($_SESSION['edit']) && $_SESSION['edit']) : ?>
+        <br />
+            <img src="images/<?=sanitize_input($rows['image']) ?>"/> 
+        <br />
+    <?php endif ?>  
+</form> 
+
+
+
+<?php if (!empty($errors)) : ?>
+
+    <div class="errorBox">
+        <ul>
+            <?php foreach ($errors as $error) : ?>
+                    <li class="errorTxt"><?= sanitize_input($error) ?></li>
+            <?php endforeach ?>
+        </ul>
+    </div>
+
+<?php endif ?>
 
 <br />
 

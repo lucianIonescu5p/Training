@@ -12,12 +12,16 @@ $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
 
-// instantiate cart as an array
+/** instantiate cart as an array
+ *
+ */
 if (empty($_SESSION['cart'])) {
     $_SESSION['cart'] = array();
 };
 
-// data test function
+/** data test function
+ *
+ */
 function sanitize_input($data) {
     
     $data = htmlspecialchars($data);

@@ -37,9 +37,9 @@ include('../header.php');
 ?>
 <div class="loginWrapper">
     <?php if (isset($_SESSION['authenticated']) && $_SESSION['authenticated']) : ?>
-    <a class="login" href="index.php?log_out"><?= sanitize_input(trans('Log out')) ?></a>
+        <a class="login" href="index.php?log_out"><?= sanitize_input(trans('Log out')) ?></a>
     <?php else : ?>
-    <a class="login" href="login.php"><?= sanitize_input(trans('Log in')) ?></a>
+        <a class="login" href="login.php"><?= sanitize_input(trans('Log in')) ?></a>
     <?php endif ?>
 
 </div>

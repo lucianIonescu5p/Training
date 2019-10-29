@@ -69,3 +69,13 @@ body {
 .success{
     color: green;
 }
+
+.errorBox {
+    margin-top: 10px;
+    padding-right: 20px;
+    background-color: red;
+    border-radius: 10px;
+}
+.errorTxt{
+    color: white;
+}

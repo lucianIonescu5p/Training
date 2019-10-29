@@ -1,6 +1,6 @@
 <?php
 
-/* translation function
+/* Translate function
  *
  */
 function trans($label) 

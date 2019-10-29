@@ -2,9 +2,9 @@
 
 require_once '../common.php';
 
-if (!$_SESSION['authenticated']) {
+if (isset($_SESSION['authenticated']) && !$_SESSION['authenticated']) {
 
-    header('Location: login.php');
+    header('Location: login.php?unauthorized');
     die();
 
 } elseif ($_SESSION['authenticated']) {
@@ -38,7 +38,9 @@ if (isset($_GET['delete'])) {
     $res = $stmt->execute(['id' => $_GET['delete']]);
     $rows = $stmt->fetch();
 
-    unlink('images/' . $rows['image']);
+    if (!empty($rows['image'])) {
+        unlink('images/' . $rows['image']);
+    }
 
     $deleteSql = 'DELETE FROM products WHERE id = :id';
     $stmt = $conn->prepare($deleteSql);

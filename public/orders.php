@@ -2,14 +2,22 @@
 
 require_once '../common.php';
 
-$sql = 'SELECT * FROM orders';
+if (!$_SESSION['authenticated']) {
 
-$stmt = $conn->prepare($sql);
-$res = $stmt->execute();
-$rows = $stmt->fetchAll();
+    header('Location: login.php?unauthorized');
+    die();
 
-$pageTitle = trans('Orders');
-include('../header.php');
+} else {
+
+    $sql = 'SELECT * FROM orders';
+
+    $stmt = $conn->prepare($sql);
+    $res = $stmt->execute();
+    $rows = $stmt->fetchAll();
+
+    $pageTitle = trans('Orders');
+    include('../header.php');
+}
 
 ?>
 <?php if (empty($rows)) : ?>
