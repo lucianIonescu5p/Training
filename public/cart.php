@@ -43,6 +43,8 @@ $name = $contactDetails = $comments = '';
 $totalPrice = 0;
 
 $errors = [];
+array_fill_keys($errors, 'name');
+array_fill_keys($errors, 'eMail');
 
 /** validation
  *
@@ -51,8 +53,8 @@ if (isset($_POST['checkout'])) {
 
     if (empty($_POST['name'])) {
 
-        array_fill_keys($errors, trans('name'));
-        $errors['name'] = trans('Name is required');
+        $errors['name'] = [];
+        array_push($errors['name'], trans('Name is required'));
 
     } else {
         $name = $_POST['name'];
@@ -60,13 +62,13 @@ if (isset($_POST['checkout'])) {
 
     if (empty($_POST['contactDetails'])) {
 
-        array_fill_keys($errors, trans('eMail'));
-        $errors['eMail'] = trans('E-mail is required');
+        $errors['eMail'] = [];
+        array_push($errors['eMail'], trans('E-mail is required'));
 
     } else if (!filter_var($_POST['contactDetails'], FILTER_VALIDATE_EMAIL)) {
 
-        array_fill_keys($errors, trans('eMail'));
-        $errors['eMail'] = trans('Invalid email format, try someone@example.com');
+        $errors['eMail'] = [];
+        array_push($errors['eMail'], trans('Invalid email format, try someone@example.com'));
 
     } else {
         $contactDetails = $_POST['contactDetails'];
@@ -162,6 +164,7 @@ $pageTitle = trans('Cart');
 include('../header.php');
 
 ?>
+
 <div id="cartContainer">
 
     <?php if (empty($_SESSION['cart'])) : ?>
@@ -220,8 +223,10 @@ include('../header.php');
 
                 <div class="errorBox">
                     <ul>
-                        <?php foreach ($errors as $error) : ?>
-                                <li class="errorTxt"><?= sanitize_input($error) ?></li>
+                        <?php foreach ($errors as $error => $key) : ?>
+                            <?php foreach ($key as $error => $text) : ?>
+                                <li class="errorTxt"><?= sanitize_input($text) ?></li>
+                            <?php endforeach ?>
                         <?php endforeach ?>
                     </ul>
                 </div>

@@ -13,6 +13,10 @@ if (!$_SESSION['authenticated']) {
     $price = null;
 
     $errors = [];
+    array_fill_keys($errors, 'title');
+    array_fill_keys($errors, 'description');
+    array_fill_keys($errors, 'price');
+    array_fill_keys($errors, 'image');
 
     /** data validation
      *
@@ -20,34 +24,38 @@ if (!$_SESSION['authenticated']) {
     if (isset($_POST['submit']) || isset($_POST['update'])) {
 
         if (empty($_POST['title'])) {
-            array_fill_keys($errors, 'title');
-            $errors['title'] = [trans('Please insert a title')];
+
+            $errors['title'] = [];
+            array_push($errors['title'], trans('Please insert a title'));
+
         } else {
             $title = $_POST['title'];
         };
 
         if (empty($_POST['description'])) {
-            array_fill_keys($errors, 'description');
-            $errors['description'] = [trans('Please insert a description')];
+
+            $errors['description'] = [];
+            array_push($errors['description'], trans('Please insert a description'));
+
         } else {
             $description = $_POST['description'];
         };
 
         if (empty($_POST['price'])) {
 
-            array_fill_keys($errors, 'price');
-            $errors['price'] = [trans('Please insert a price')];
+            $errors['price'] = [];
+            array_push($errors['price'], trans('Please insert a price'));
 
-        } elseif ($_POST['price'] < 0) {
+        } else if ($_POST['price'] < 0) {
 
-            array_fill_keys($errors, 'price');
-            $errors['price'] = [trans('Please enter a positive integer value.')];
+            $errors['price'] = [];
+            array_push($errors['price'], trans('Please enter a positive integer value.'));
 
         } else {
             $price = $_POST['price'];
         }
-        
-        if (!$_FILES['image']) {
+
+        if ($_FILES['image']['error'] !== 4) {
 
             /** image validation
              *
@@ -73,29 +81,29 @@ if (!$_SESSION['authenticated']) {
 
                     } else {
 
-                        array_fill_keys($errors, 'image');
-                        $errors['image'] = [trans('File too big!')];
+                        $errors['image'] = [];
+                        array_push($errors['image'], trans('Image is too big!'));
                         
                     };
                 } else {
 
-                    array_fill_keys($errors, 'image');
-                    $errors['image'] = [trans('Sorry, there was an error uploading the image')];
+                    $errors['image'] = [];
+                    array_push($errors['image'], trans('Sorry, there was an error uploading the image'));
 
                 };
             } else {
 
-                array_fill_keys($errors, 'image');
-                $errors['image'] = [trans('You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.')];
+                $errors['image'] = [];
+                array_push($errors['image'], trans('You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.'));
                 
             };
         } else {
 
-            array_fill_keys($errors, 'image');
-            $errors['image'] = [trans('Please upload an image')];
+            $errors['image'] = [];
+            array_push($errors['image'], trans('Please insert an image'));
 
         }
-print_r($errors);
+
         /** insert new product
          *
          */
@@ -134,8 +142,12 @@ print_r($errors);
         $stmt->execute([$_POST['title'], $_POST['description'], $_POST['price'], $image, $rows['id']]);
 
         $_SESSION['edit'] = false;
-        
-        unlink('images/' . $rows['image']);
+
+        if (isset($_FILES['images'])) {
+            unlink('images/' . $rows['image']);
+        } else {
+            $image = $rows['image'];
+        }
 
         header('Location: product.php?' . trans('success'));
         die();
@@ -158,25 +170,25 @@ $pageTitle = trans('Product');
 include('../header.php');
 
 ?>
+
 <form method="POST" enctype="multipart/form-data">
 
     <?php if(isset($_GET['success'])): ?>
     <p class="success"><?= trans('Product updated') ?></p>
     <?php endif; ?>
 
-    <input type="text" name="title" value="<?= sanitize_input($title) ?>" placeholder="<?= trans(sanitize_input('Insert product title')); ?>"> <br />
+    <input type="text" name="title" value="<?= sanitize_input($title) ?>" placeholder="<?= sanitize_input(trans('Insert product title')); ?>"> <br />
 
-    <input type="text" name="description" value="<?= sanitize_input($description) ?>" placeholder="<?= trans(sanitize_input('Insert product description')); ?>"> <br />
+    <input type="text" name="description" value="<?= sanitize_input($description) ?>" placeholder="<?= sanitize_input(trans('Insert product description')); ?>"> <br />
     
+    <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= sanitize_input(trans('Insert product price')); ?>"> <br />
 
-    <input type="number" name="price" value="<?= sanitize_input($price) ?>" placeholder="<?= trans(sanitize_input('Insert product price')); ?>"> <br />
-    
-    <input type="file" name="image" placeholder="<?= trans(sanitize_input('Insert product image')); ?>" ><br />
-    
+    <input type="file" name="image" placeholder="<?= sanitize_input(trans('Insert product image')); ?>" ><br />
+
     <?php if ($_SESSION['edit']) : ?>
-        <input type="submit" name="update" value="<?= trans(sanitize_input('Update product')); ?>">
+        <input type="submit" name="update" value="<?= sanitize_input(trans('Update product')); ?>">
     <?php else : ?>
-        <input type="submit" name="submit" value="<?= trans(sanitize_input('Add product')); ?>">
+        <input type="submit" name="submit" value="<?= sanitize_input(trans('Add product')); ?>">
     <?php endif ?>
 
     <?php if (isset($_SESSION['edit']) && $_SESSION['edit']) : ?>
@@ -192,8 +204,10 @@ include('../header.php');
 
     <div class="errorBox">
         <ul>
-            <?php foreach ($errors as $error) : ?>
-                    <li class="errorTxt"><?= sanitize_input($error) ?></li>
+            <?php foreach ($errors as $error => $key) : ?>
+                <?php foreach ($key as $error => $text) : ?>
+                    <li class="errorTxt"><?= sanitize_input($text) ?></li>
+                <?php endforeach ?>
             <?php endforeach ?>
         </ul>
     </div>

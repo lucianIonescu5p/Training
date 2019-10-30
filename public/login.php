@@ -5,6 +5,8 @@ require_once '../common.php';
 $name = $password = '';
 
 $errors = [];
+array_fill_keys($errors, 'username');
+array_fill_keys($errors, 'password');
 
 /** validation
  *
@@ -12,31 +14,31 @@ $errors = [];
 if (isset($_POST['submit'])) {
 
     if (empty($_POST['username'])) {
-
-        array_fill_keys($errors, 'username');
-        $errors['username']->array_push([trans('Please enter username')]);
-
-    } else if ($_POST['username'] === ADMIN_NAME) {
-        $name = ADMIN_NAME;
-    } else {
-
-        array_fill_keys($errors, 'username');
-        $errors['username'] = [trans('Username is not correct')];
         
+        $errors['username'] = [];
+        array_push($errors['username'], trans('Please insert a username'));
+        
+    } else if ($_POST['username'] !== ADMIN_NAME) {
+
+        $errors['username'] = [];
+        array_push($errors['username'], trans('Username or password are not correct'));
+
+    } else {
+        $name = ADMIN_NAME;
     };
 
     if (empty($_POST['password'])) {
 
-        array_fill_keys($errors, 'password');
-        $errors['password'] = trans('Please enter password');
+        $errors['password'] = [];
+        array_push($errors['password'], trans('Please insert a password'));
 
-    } else if ($_POST['password'] === ADMIN_PASS) {
-        $password = ADMIN_PASS;
+    } else if ($_POST['password'] !== ADMIN_PASS) {
+
+        $errors['password'] = [];
+        array_push($errors['password'], trans('Username or password are not correct'));
+
     } else {
-
-        array_fill_keys($errors, trans('password'));
-        $errors['password'] = trans('password is not correct');
-        
+        $password = ADMIN_PASS;
     };
 
     if (empty($errors)) {
@@ -47,11 +49,13 @@ if (isset($_POST['submit'])) {
         
     }
 };
-print_r($errors);
+var_dump($errors);
+
 $pageTitle = trans('Login Shop 1');
 include('../header.php');
 
 ?>
+
 <div class="container">
 
     <?php if (isset($_GET['unauthorized'])) : ?>
@@ -74,8 +78,10 @@ include('../header.php');
 
         <div class="errorBox">
             <ul>
-                <?php foreach ($errors as $error) : ?>
-                        <li class="errorTxt"><?= $error ?></li>
+                <?php foreach ($errors as $error => $key) : ?>
+                    <?php foreach ($key as $error => $text) : ?>
+                        <li class="errorTxt"><?= sanitize_input($text) ?></li>
+                    <?php endforeach ?>
                 <?php endforeach ?>
             </ul>
         </div>

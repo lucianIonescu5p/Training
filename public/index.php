@@ -35,6 +35,7 @@ $pageTitle = trans('Shop 1');
 include('../header.php');
 
 ?>
+
 <div class="loginWrapper">
     <?php if (isset($_SESSION['authenticated']) && $_SESSION['authenticated']) : ?>
         <a class="login" href="index.php?log_out"><?= sanitize_input(trans('Log out')) ?></a>

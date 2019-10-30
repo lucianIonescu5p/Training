@@ -20,6 +20,7 @@ if (!$_SESSION['authenticated']) {
 }
 
 ?>
+
 <?php if (empty($rows)) : ?>
 <p><?= sanitize_input(trans('No orders')) ?></p>
 <?php else : ?>

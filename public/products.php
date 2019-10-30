@@ -32,7 +32,7 @@ if (isset($_GET['logOut'])) {
  *
  */
 if (isset($_GET['delete'])) {
-    
+
     $sql = 'SELECT * FROM products WHERE id = :id';
     $stmt = $conn->prepare($sql);
     $res = $stmt->execute(['id' => $_GET['delete']]);
@@ -71,6 +71,7 @@ $pageTitle = trans('Products');
 include('../header.php');
 
 ?>
+
 <div>
 
     <table border="1" cellpadding="3">
