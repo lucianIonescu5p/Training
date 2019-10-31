@@ -12,11 +12,9 @@ if (!$_SESSION['authenticated']) {
     $title = $description = $image = '';
     $price = null;
 
+    $keys = ['title', 'description', 'price', 'image'];
     $errors = [];
-    array_fill_keys($errors, 'title');
-    array_fill_keys($errors, 'description');
-    array_fill_keys($errors, 'price');
-    array_fill_keys($errors, 'image');
+    array_fill_keys($errors, $keys);
 
     /** data validation
      *
@@ -83,7 +81,7 @@ if (!$_SESSION['authenticated']) {
 
                         $errors['image'] = [];
                         array_push($errors['image'], trans('Image is too big!'));
-                        
+
                     };
                 } else {
 
@@ -95,7 +93,7 @@ if (!$_SESSION['authenticated']) {
 
                 $errors['image'] = [];
                 array_push($errors['image'], trans('You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.'));
-                
+
             };
         } else {
 
@@ -113,7 +111,7 @@ if (!$_SESSION['authenticated']) {
 
             $stmt = $conn->prepare($sql);
             $stmt->execute(array('title' => $title, 'description' => $description, 'price' => $price, 'image' => $image));
-            header('Location: product.php?' . trans('success'));
+            header('Location: product.php?success');
             die();
 
         }
@@ -141,15 +139,10 @@ if (!$_SESSION['authenticated']) {
         $stmt = $conn->prepare($sql);
         $stmt->execute([$_POST['title'], $_POST['description'], $_POST['price'], $image, $rows['id']]);
 
+        unlink('images/' . $rows['image']);
+        
         $_SESSION['edit'] = false;
-
-        if (isset($_FILES['images'])) {
-            unlink('images/' . $rows['image']);
-        } else {
-            $image = $rows['image'];
-        }
-
-        header('Location: product.php?' . trans('success'));
+        header('Location: product.php?success');
         die();
 
     }
@@ -197,8 +190,6 @@ include('../header.php');
         <br />
     <?php endif ?>  
 </form> 
-
-
 
 <?php if (!empty($errors)) : ?>
 

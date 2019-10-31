@@ -4,9 +4,9 @@ require_once '../common.php';
 
 $name = $password = '';
 
+$keys = ['username', 'password'];
 $errors = [];
-array_fill_keys($errors, 'username');
-array_fill_keys($errors, 'password');
+array_fill_keys($errors, $keys);
 
 /** validation
  *
@@ -14,10 +14,10 @@ array_fill_keys($errors, 'password');
 if (isset($_POST['submit'])) {
 
     if (empty($_POST['username'])) {
-        
+
         $errors['username'] = [];
         array_push($errors['username'], trans('Please insert a username'));
-        
+
     } else if ($_POST['username'] !== ADMIN_NAME) {
 
         $errors['username'] = [];
@@ -49,7 +49,6 @@ if (isset($_POST['submit'])) {
         
     }
 };
-var_dump($errors);
 
 $pageTitle = trans('Login Shop 1');
 include('../header.php');

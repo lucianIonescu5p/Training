@@ -42,9 +42,9 @@ $rows = $stmt->fetchAll();
 $name = $contactDetails = $comments = '';
 $totalPrice = 0;
 
+$keys = ['name', 'eMail'];
 $errors = [];
-array_fill_keys($errors, 'name');
-array_fill_keys($errors, 'eMail');
+array_fill_keys($errors, $keys);
 
 /** validation
  *
