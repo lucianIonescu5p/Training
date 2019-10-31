@@ -186,7 +186,7 @@ include('../header.php');
 
     <?php if (isset($_SESSION['edit']) && $_SESSION['edit']) : ?>
         <br />
-            <img src="images/<?=sanitize_input($rows['image']) ?>"/> 
+            <img alt="<?= sanitize_input(trans('Product image')) ?>" src="images/<?=sanitize_input($rows['image']) ?>"/>
         <br />
     <?php endif ?>  
 </form> 
@@ -196,7 +196,7 @@ include('../header.php');
     <div class="errorBox">
         <ul>
             <?php foreach ($errors as $error => $key) : ?>
-                <?php foreach ($key as $error => $text) : ?>
+                <?php foreach ($key as $title => $text) : ?>
                     <li class="errorTxt"><?= sanitize_input($text) ?></li>
                 <?php endforeach ?>
             <?php endforeach ?>

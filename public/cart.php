@@ -111,7 +111,7 @@ if (isset($_POST['checkout']) && empty($errors)) {
                         $totalPrice += $row['price'];
                         $message .= ' 
                             <tr>
-                                <td align="middle"><img src="' . URL . '/images/' . $row['image'] . '" width="70px" height="70px"></td>
+                                <td align="middle"><img alt="' .sanitize_input(trans('Product Image')). '" src="' . URL . '/images/' . $row['image'] . '" width="70px" height="70px"></td>
                                 <td align="middle">' . sanitize_input($row['title']) . '</td>
                                 <td align="middle">' . sanitize_input($row['description']) . '</td>
                                 <td align="middle">' . sanitize_input($row['price']) . '</td>
@@ -190,7 +190,7 @@ include('../header.php');
             <?php $totalPrice += $row['price']; ?>
 
                 <tr>
-                    <td align="middle"><img src="images/<?= sanitize_input($row['image']) ?>" width="70px" height="70px"></td>
+                    <td align="middle"><img alt="<?= sanitize_input(trans('Product image')) ?> " src="images/<?= sanitize_input($row['image']) ?>" width="70px" height="70px"></td>
                     <td align="middle"><?= sanitize_input($row['title']) ?></td>
                     <td align="middle"><?= sanitize_input($row['description']) ?></td>
                     <td align="middle"><?= sanitize_input($row['price']) ?></td>
@@ -224,7 +224,7 @@ include('../header.php');
                 <div class="errorBox">
                     <ul>
                         <?php foreach ($errors as $error => $key) : ?>
-                            <?php foreach ($key as $error => $text) : ?>
+                            <?php foreach ($key as $title => $text) : ?>
                                 <li class="errorTxt"><?= sanitize_input($text) ?></li>
                             <?php endforeach ?>
                         <?php endforeach ?>
