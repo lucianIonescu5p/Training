@@ -1,35 +1,29 @@
 <?php
 
 require_once '../common.php';
+require_once '../auth.php';
 
-if (!$_SESSION['authenticated']) {
+$sql = 'SELECT * FROM orders';
 
-    header('Location: login.php?unauthorized');
-    die();
+$stmt = $conn->prepare($sql);
+$res = $stmt->execute();
+$rows = $stmt->fetchAll();
 
-} else {
+$pageTitle = trans('Orders');
+include('../header.php');
 
-    $sql = 'SELECT * FROM orders';
-
-    $stmt = $conn->prepare($sql);
-    $res = $stmt->execute();
-    $rows = $stmt->fetchAll();
-
-    $pageTitle = trans('Orders');
-    include('../header.php');
-}
 
 ?>
 
 <?php if (empty($rows)) : ?>
-<p><?= sanitize_input(trans('No orders')) ?></p>
+<p><?= sanitize(trans('No orders')) ?></p>
 <?php else : ?>
     <ul>
         <?php foreach($rows as $row): ?>
 
-            <li><?= sanitize_input(trans('Order id: ')) . sanitize_input($row['id']) . sanitize_input(trans('; Name: ')) . sanitize_input($row['name']) . 
-                        sanitize_input(trans('; E-mail: ')) . sanitize_input($row['contact_details']) . 
-                        sanitize_input(trans('; Price: ')) . sanitize_input($row['price']) . sanitize_input(trans('; Date: ')) . sanitize_input($row['date']) ?> </li> <br />
+            <li><?= sanitize(trans('Order id: ')) . sanitize($row['id']) . sanitize(trans('; Name: ')) . sanitize($row['name']) .
+                        sanitize(trans('; E-mail: ')) . sanitize($row['contact_details']) .
+                        sanitize(trans('; Price: ')) . sanitize($row['price']) . sanitize(trans('; Date: ')) . sanitize($row['date']) ?> </li> <br />
 
         <?php endforeach; ?>
     </ul>
@@ -38,7 +32,7 @@ if (!$_SESSION['authenticated']) {
 
 <div class="productsBtn">
 
-    <span><a class="cartLink cartBtn" href="products.php"><?= sanitize_input(trans('Back')) ?></a></span>
+    <span><a class="cartLink cartBtn" href="products.php"><?= sanitize(trans('Back')) ?></a></span>
 
 </div>
 

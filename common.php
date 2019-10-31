@@ -10,21 +10,18 @@ $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-
-
-/** instantiate cart as an array
- *
- */
+// instantiate cart as empty array
 if (empty($_SESSION['cart'])) {
     $_SESSION['cart'] = array();
 };
 
-/** data test function
- *
+/**
+ * @param $data
+ * @return string
  */
-function sanitize_input($data) {
+function sanitize($data) {
     
     $data = htmlspecialchars($data);
 
     return $data;
-  }
+}

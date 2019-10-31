@@ -1,9 +1,10 @@
 <?php
 
-define('SERVERNAME', '');
-define('USERNAME', '');
-define('PASSWORD', '');
-define('DBNAME', '');
+// server details
+define('HOST', '');
+define('DB_USERNAME', '');
+define('DB_PASSWORD', '');
+define('DB_NAME', '');
 define('URL', '');
 
 // Shop manager email
