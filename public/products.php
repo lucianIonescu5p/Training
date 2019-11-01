@@ -4,13 +4,10 @@ require_once '../common.php';
 require_once '../auth.php';
 
 if ($_SESSION['authenticated']) {
-
     $sql = 'SELECT * FROM products';
-
     $stmt = $conn->prepare($sql);
     $res = $stmt->execute();
     $rows = $stmt->fetchAll();
-
 }
 
 // Log out
@@ -42,47 +39,36 @@ if (isset($_GET['delete'])) {
 
 $pageTitle = trans('Products');
 include('../header.php');
-
 ?>
 
 <div>
-
     <table border="1" cellpadding="3">
 
             <tr>
-
                 <th align="middle"><?= sanitize(trans('ID')) ?></th>
                 <th align="middle"><?= sanitize(trans('Title')) ?></th>
                 <th align="middle"><?= sanitize(trans('Description')) ?></th>
                 <th align="middle"><?= sanitize(trans('Price')) ?></th>
                 <th align="middle"><?= sanitize(trans('Edit')) ?></th>
                 <th align="middle"><?= sanitize(trans('Delete')) ?></th>
-
             </tr>
 
             <?php foreach($rows as $row): ?>
-
                 <tr>
-
                     <td align="middle"><img alt="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px"></td>
                     <td align="middle"><?= sanitize($row['title']) ?></td>
                     <td align="middle"><?= sanitize($row['description']) ?></td>
                     <td align="middle"><?= sanitize($row['price']) ?></td>
-                    <td align="middle"><a href="product.php/<?= sanitize($row['id']) ?>"><?= sanitize(trans('Edit')) ?></a></td>
+                    <td align="middle"><a href="product.php?edit=<?= sanitize($row['id']) ?>"><?= sanitize(trans('Edit')) ?></a></td>
                     <td align="middle"><a href="?delete=<?= sanitize($row['id']) ?>"><?= sanitize(trans('Delete')) ?></a></td>
-
                 </tr>
-
             <?php endforeach ?>
     </table>
 </div>
 
 <div class="productsBtn">
-
-    <span><a class="cartLink" href="?logOut" ><?= sanitize(trans('Log out')) ?></a></span>
-    <span><a class="cartLink" href="product.php/<?php $row['id'] ?>" ><?= sanitize(trans('Add product')) ?></a></span>
+    <span><a class="cartLink" href="product.php" ><?= sanitize(trans('Add product')) ?></a></span>
     <span><a class="cartLink" href="orders.php" ><?= sanitize(trans('Orders')) ?></a></span>
-
 </div>
 
 <?php include('../footer.php') ?>

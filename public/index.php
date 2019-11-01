@@ -3,7 +3,7 @@
 require_once '../common.php';
 
 // add items to the cart
-if (isset($_GET['id'])) {
+if (isset($_GET['id']) && !in_array($_GET['id'], $_SESSION['cart'])) {
     array_push($_SESSION['cart'], $_GET['id']);
     header("Location: index.php");
     die();
@@ -29,16 +29,7 @@ if (isset($_GET['log_out'])) {
 
 $pageTitle = trans('Shop 1');
 include('../header.php');
-
 ?>
-
-<div class="loginWrapper">
-    <?php if (isset($_SESSION['authenticated']) && $_SESSION['authenticated']) : ?>
-        <a class="login" href="index.php?log_out"><?= sanitize(trans('Log out')) ?></a>
-    <?php else : ?>
-        <a class="login" href="login.php"><?= sanitize(trans('Log in')) ?></a>
-    <?php endif ?>
-</div>
 
 <div class="container">
     <div class="table">
@@ -53,7 +44,13 @@ include('../header.php');
 
             <?php foreach ($rows as $row) : ?>
                 <tr>
-                    <td align="middle"><img alt ="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px"></td>
+                    <td align="middle">
+                        <?php if($row['image']) : ?>
+                            <img alt ="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px">
+                        <?php else : ?>
+                            <p><?= sanitize(trans('No image')) ?></p>
+                        <?php endif ?>
+                    </td>
                     <td align="middle"><?= sanitize($row['title']) ?></td>
                     <td align="middle"><?= sanitize($row['description']) ?></td>
                     <td align="middle"><?= sanitize($row['price']) ?></td>

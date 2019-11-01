@@ -3,32 +3,41 @@
 require_once '../common.php';
 require_once '../auth.php';
 
-$title = $description = $image = '';
-$price = null;
 $errors = [];
+$title = $description = $price = '';
+
+if (isset($_GET['edit']) && $_GET['edit']) {
+
+    $sql = 'SELECT * FROM products WHERE id=:id';
+    $stmt = $conn->prepare($sql);
+    $res = $stmt->execute(['id' => $_GET['edit']]);
+    $rows = $stmt->fetch();
+    $title = $rows['title'];
+    $description = $rows['description'];
+    $price = $rows['price'];
+    $image = $rows['image'];
+
+};
 
 // data validation
 if (isset($_POST['submit'])) {
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $price = $_POST['price'];
 
     if (empty($_POST['title'])) {
         $errors['title'][] = trans('Please insert a title');
-    } else {
-        $title = $_POST['title'];
     };
 
     if (empty($_POST['description'])) {
         $errors['description'][] = trans('Please insert a description');
-    } else {
-        $description = $_POST['description'];
     };
 
     if (empty($_POST['price'])) {
         $errors['price'][] = trans('Please insert a price');
     } else if ($_POST['price'] < 0) {
         $errors['price'][] = trans('Please enter a positive integer value.');
-    } else {
-        $price = $_POST['price'];
-    }
+    };
 
     if ($_FILES['image']['error'] !== 4) {
 
@@ -80,10 +89,9 @@ if (isset($_POST['submit'])) {
 
 $pageTitle = trans('Product');
 include('../header.php');
-
 ?>
 
-<form method="POST" action="product.php/<?= $rows['id'] ?>" enctype="multipart/form-data">
+<form method="POST" <?= (isset($_GET['edit']) && $_GET['edit']) ? sanitize(trans('action="product.php?edit=' . $_GET['edit'])) : '' ?> enctype="multipart/form-data">
 
     <?php if (isset($_GET['success'])) : ?>
     <p class="success"><?= trans('Product updated') ?></p>
@@ -105,7 +113,12 @@ include('../header.php');
     <?php $errorKey='image' ?>
     <?php include '../errors.php' ?>
 
-    <input type="submit" name="submit" value="<?= sanitize(trans('Submit')) ?>">
+    <?php if (isset($_GET['edit']) && $_GET['edit']) : ?>
+        <img src="images/<?= sanitize($rows['image']) ?>">
+    <?php endif ?>
+    <br/>
+
+    <input class="cartLink cartBtn" type="submit" name="submit" value="<?= sanitize(trans('Submit')) ?>">
 
 </form> 
 

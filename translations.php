@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Translation function
+ * 
  * @param $label
  * @return mixed
  */
