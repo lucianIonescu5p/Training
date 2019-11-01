@@ -9,25 +9,17 @@ $errors = [];
 if (isset($_POST['submit'])) {
 
     if (empty($_POST['username'])) {
-
         $errors['username'][] = trans('Please insert a username');
-
     } else if ($_POST['username'] !== ADMIN_NAME) {
-
         $errors['username'][] = trans('Incorrect username');
-
     } else {
         $name = ADMIN_NAME;
     };
 
     if (empty($_POST['password'])) {
-
-        $errors['password'][] = trans('Incorrect password');
-
+        $errors['password'][] = trans('Please insert a password');
     } else if ($_POST['password'] !== ADMIN_PASS) {
-
-        $errors['password'][] = trans('Wrong');
-
+        $errors['password'][] = trans('Wrong password');
     } else {
         $password = ADMIN_PASS;
     };
@@ -47,7 +39,7 @@ include('../header.php');
 <div class="container">
 
     <?php if (isset($_GET['unauthorized'])) : ?>
-        <span><?= sanitize(trans('Please log in')) ?></span>
+        <p><?= sanitize(trans('Please log in')) ?></p>
     <?php endif ?>
 
     <form method="POST" align = "left">

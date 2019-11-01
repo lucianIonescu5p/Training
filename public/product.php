@@ -11,29 +11,21 @@ $errors = [];
 if (isset($_POST['submit'])) {
 
     if (empty($_POST['title'])) {
-
         $errors['title'][] = trans('Please insert a title');
-
     } else {
         $title = $_POST['title'];
     };
 
     if (empty($_POST['description'])) {
-
         $errors['description'][] = trans('Please insert a description');
-
     } else {
         $description = $_POST['description'];
     };
 
     if (empty($_POST['price'])) {
-
         $errors['price'][] = trans('Please insert a price');
-
     } else if ($_POST['price'] < 0) {
-
         $errors['price'][] = trans('Please enter a positive integer value.');
-
     } else {
         $price = $_POST['price'];
     }
@@ -97,19 +89,19 @@ include('../header.php');
     <p class="success"><?= trans('Product updated') ?></p>
     <?php endif; ?>
 
-    <input type="text" name="title" value="<?= sanitize($title) ?>" placeholder="<?= sanitize(trans('Insert product title')); ?>"> <br />
+    <input type="text" name="title" value="<?= sanitize($title) ?>" placeholder="<?= sanitize(trans('Insert product title')) ?>"> <br />
     <?php $errorKey='title' ?>
     <?php include '../errors.php' ?>
 
-    <input type="text" name="description" value="<?= sanitize($description) ?>" placeholder="<?= sanitize(trans('Insert product description')); ?>"> <br />
+    <input type="text" name="description" value="<?= sanitize($description) ?>" placeholder="<?= sanitize(trans('Insert product description')) ?>"> <br />
     <?php $errorKey='description' ?>
     <?php include '../errors.php' ?>
 
-    <input type="number" name="price" value="<?= sanitize($price) ?>" placeholder="<?= sanitize(trans('Insert product price')); ?>"> <br />
+    <input type="number" name="price" value="<?= sanitize($price) ?>" placeholder="<?= sanitize(trans('Insert product price')) ?>"> <br />
     <?php $errorKey='price' ?>
     <?php include '../errors.php' ?>
 
-    <input type="file" name="image" placeholder="<?= sanitize(trans('Insert product image')); ?>" ><br />
+    <input type="file" name="image" placeholder="<?= sanitize(trans('Insert product image')) ?>" ><br />
     <?php $errorKey='image' ?>
     <?php include '../errors.php' ?>
 

@@ -39,22 +39,16 @@ $errors = [];
 if (isset($_POST['checkout'])) {
 
     if (empty($_POST['name'])) {
-
         $errors['name'][] = trans('Name is required');
-
     } else {
         $name = $_POST['name'];
     };
 
     if (empty($_POST['contactDetails'])) {
-
         $errors['eMail'][] = trans('E-mail is required');
-
     } else if (!filter_var($_POST['contactDetails'], FILTER_VALIDATE_EMAIL)) {
-
         $errors['eMail'][] = trans('Invalid email format, try someone@example.com');
         $contactDetails = $_POST['contactDetails'];
-
     } else {
         $contactDetails = $_POST['contactDetails'];
     }
@@ -67,7 +61,7 @@ if (isset($_POST['checkout']) && !$errors) {
 
     $headers = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type:text/html; charset=UTF-8' . "\r\n";
-    $headers .= 'From: <' . sanitize(trans($contactDetails)) . '>' . "\r\n";
+    $headers .= 'From: <' . sanitize($contactDetails) . '>' . "\r\n";
 
     $message = '
         <html>

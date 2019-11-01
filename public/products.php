@@ -73,7 +73,7 @@ include('../header.php');
 
                 </tr>
 
-            <?php endforeach; ?>
+            <?php endforeach ?>
     </table>
 </div>
 

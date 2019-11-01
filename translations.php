@@ -1,7 +1,8 @@
 <?php
 
-/* Translate function
- *
+/**
+ * @param $label
+ * @return mixed
  */
 function trans($label) 
 {
