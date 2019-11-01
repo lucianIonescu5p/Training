@@ -14,7 +14,7 @@ if (isset($_POST['submit'])) {
 
     } else if ($_POST['username'] !== ADMIN_NAME) {
 
-        $errors['username'][] = trans('Username or password are not correct');
+        $errors['username'][] = trans('Incorrect username');
 
     } else {
         $name = ADMIN_NAME;
@@ -22,11 +22,11 @@ if (isset($_POST['submit'])) {
 
     if (empty($_POST['password'])) {
 
-        $errors['password'][] = trans('Please insert a password');
+        $errors['password'][] = trans('Incorrect password');
 
     } else if ($_POST['password'] !== ADMIN_PASS) {
 
-        $errors['password'][] = trans('Username or password are not correct');
+        $errors['password'][] = trans('Wrong');
 
     } else {
         $password = ADMIN_PASS;
@@ -41,7 +41,7 @@ if (isset($_POST['submit'])) {
 
 $pageTitle = trans('Login Shop 1');
 include('../header.php');
-print_r($errors);
+
 ?>
 
 <div class="container">
@@ -53,20 +53,14 @@ print_r($errors);
     <form method="POST" align = "left">
 
         <label for="username"><?= sanitize(trans('Master username: ')) ?></label><br />
-        <input type="text" name="username" value="<?= $name; ?>"><br />
-        <?php if ($errors['username']) : ?>
-            <div class="errorBox">
-                <ul>
-                    <?php foreach ($errors['username'] as $error) : ?>
-                        <li class="errorTxt"><?= sanitize($error) ?></li>
-                    <?php endforeach ?>
-                </ul>
-                    <?php print_r($errors['username']) ?>
-            </div>
-        <?php endif ?>
+        <input type="text" name="username" value="<?= sanitize(trans($name)) ?>"><br />
+        <?php $errorKey='username' ?>
+        <?php include '../errors.php' ?>
         
         <label for="password"><?= sanitize(trans('Master passcode: ')) ?></label><br />
         <input type="password" name="password" value=""><br />
+        <?php $errorKey='password' ?>
+        <?php include '../errors.php' ?>
 
         <input type="submit" name="submit" value="Log in">
 

@@ -72,10 +72,10 @@ body {
 
 .errorBox {
     margin-top: 10px;
-    padding-right: 20px;
+    box-shadow: 2px 2px 2px -1px rgb(53, 10, 10);
     background-color: red;
-    border-radius: 10px;
 }
 .errorTxt{
+    text-align: center;
     color: white;
 }

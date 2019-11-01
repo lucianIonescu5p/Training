@@ -8,7 +8,7 @@ $price = null;
 $errors = [];
 
 // data validation
-if (isset($_POST['submit']) || isset($_POST['update'])) {
+if (isset($_POST['submit'])) {
 
     if (empty($_POST['title'])) {
 
@@ -33,7 +33,7 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
     } else if ($_POST['price'] < 0) {
 
         $errors['price'][] = trans('Please enter a positive integer value.');
-        
+
     } else {
         $price = $_POST['price'];
     }
@@ -86,87 +86,39 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
     }
 };
 
-// Update product
-if (isset($_SESSION['edit']) && $_SESSION['edit']) {
-
-    $sql = 'SELECT * FROM products WHERE id = ?';
-    $stmt = $conn->prepare($sql);
-    $res = $stmt->execute([$_SESSION['id']]);
-    $rows = $stmt->fetch();
-
-    $title = $rows['title'];
-    $description = $rows['description'];
-    $price = $rows['price'];
-
-}
-
-if (isset($_POST['update']) && !$errors) {
-
-    $sql = 'UPDATE products SET title = ?, description = ?, price = ?, image = ? WHERE products.id = ?';
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$_POST['title'], $_POST['description'], $_POST['price'], $image, $rows['id']]);
-
-    unlink('images/' . $rows['image']);
-    
-    $_SESSION['edit'] = false;
-    header('Location: product.php?success');
-    die();
-
-}
-
-// Return to products.php
-if (isset($_GET['products'])) {
-    $_SESSION['edit'] = false;
-    header('Location: products.php');
-    die();
-}
-
 $pageTitle = trans('Product');
 include('../header.php');
 
 ?>
 
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" action="product.php/<?= $rows['id'] ?>" enctype="multipart/form-data">
 
     <?php if (isset($_GET['success'])) : ?>
     <p class="success"><?= trans('Product updated') ?></p>
     <?php endif; ?>
 
     <input type="text" name="title" value="<?= sanitize($title) ?>" placeholder="<?= sanitize(trans('Insert product title')); ?>"> <br />
+    <?php $errorKey='title' ?>
+    <?php include '../errors.php' ?>
 
     <input type="text" name="description" value="<?= sanitize($description) ?>" placeholder="<?= sanitize(trans('Insert product description')); ?>"> <br />
-    
+    <?php $errorKey='description' ?>
+    <?php include '../errors.php' ?>
+
     <input type="number" name="price" value="<?= sanitize($price) ?>" placeholder="<?= sanitize(trans('Insert product price')); ?>"> <br />
+    <?php $errorKey='price' ?>
+    <?php include '../errors.php' ?>
 
     <input type="file" name="image" placeholder="<?= sanitize(trans('Insert product image')); ?>" ><br />
+    <?php $errorKey='image' ?>
+    <?php include '../errors.php' ?>
 
-    <?php if ($_SESSION['edit']) : ?>
-        <input type="submit" name="update" value="<?= sanitize(trans('Update product')); ?>">
-    <?php else : ?>
-        <input type="submit" name="submit" value="<?= sanitize(trans('Add product')); ?>">
-    <?php endif ?>
+    <input type="submit" name="submit" value="<?= sanitize(trans('Submit')) ?>">
 
-    <?php if (isset($_SESSION['edit']) && $_SESSION['edit']) : ?>
-        <br />
-            <img alt="<?= sanitize(trans('Product image')) ?>" src="images/<?=sanitize($rows['image']) ?>"/>
-        <br />
-    <?php endif ?>  
 </form> 
-
-<?php if (!empty($errors)) : ?>
-    <div class="errorBox">
-        <ul>
-            <?php foreach ($errors as $error => $key) : ?>
-                <?php foreach ($key as $title => $text) : ?>
-                    <li class="errorTxt"><?= sanitize($text) ?></li>
-                <?php endforeach ?>
-            <?php endforeach ?>
-        </ul>
-    </div>
-<?php endif ?>
 
 <br />
 
-<a class="cartLink cartBtn" href="/products.php" ><?= trans(sanitize('Products')) ?></a>
+<a class="cartLink cartBtn" href="products.php"><?= trans(sanitize('Products')) ?></a>
 
 <?php include('../footer.php') ?>

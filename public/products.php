@@ -80,7 +80,7 @@ include('../header.php');
 <div class="productsBtn">
 
     <span><a class="cartLink" href="?logOut" ><?= sanitize(trans('Log out')) ?></a></span>
-    <span><a class="cartLink" href="product.php" ><?= sanitize(trans('Add product')) ?></a></span>
+    <span><a class="cartLink" href="product.php/<?php $row['id'] ?>" ><?= sanitize(trans('Add product')) ?></a></span>
     <span><a class="cartLink" href="orders.php" ><?= sanitize(trans('Orders')) ?></a></span>
 
 </div>

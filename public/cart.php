@@ -189,8 +189,12 @@ include('../header.php');
             <form method="POST">
 
                 <input type="text" name="name" value="<?= sanitize($name) ?>" placeholder="<?= sanitize(trans('Name ')) ?>"><br />
+                <?php $errorKey='name' ?>
+                <?php include '../errors.php' ?>
 
                 <input type="text" name="contactDetails" placeholder="<?= sanitize(trans('Email Address')) ?>" value="<?= sanitize($contactDetails) ?>"><br />
+                <?php $errorKey='eMail' ?>
+                <?php include '../errors.php' ?>
 
                 <textarea rows="4" cols="50" name="comments" placeholder="<?= sanitize(trans('Comment')) ?>"><?= sanitize($comments) ?></textarea> <br />
 
@@ -198,23 +202,9 @@ include('../header.php');
 
             </form>
 
-            <?php if (!empty($errors)) : ?>
-
-                <div class="errorBox">
-                    <ul>
-                        <?php foreach ($errors as $error => $key) : ?>
-                            <?php foreach ($key as $title => $text) : ?>
-                                <li class="errorTxt"><?= sanitize($text) ?></li>
-                            <?php endforeach ?>
-                        <?php endforeach ?>
-                    </ul>
-                </div>
-
-            <?php endif ?>
-
     <?php endif ?>
 
-    <?php if (isset($_GET['mail_sent'])) : ?>
+    <?php if (isset($_GET['sent=1'])) : ?>
         <p class="success"><?= sanitize($checkoutMessage) ?></p>
     <?php endif ?>
 
