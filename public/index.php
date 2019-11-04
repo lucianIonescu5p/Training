@@ -45,7 +45,7 @@ include('../header.php');
             <?php foreach ($rows as $row) : ?>
                 <tr>
                     <td align="middle">
-                        <?php if($row['image']) : ?>
+                        <?php if ($row['image']) : ?>
                             <img alt ="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px">
                         <?php else : ?>
                             <p><?= sanitize(trans('No image')) ?></p>
@@ -64,6 +64,5 @@ include('../header.php');
     <div class="cartWrapper">
         <a class="cartLink" href="cart.php"><?= sanitize(trans('Go to cart')) ?></a>
     </div>
-
 </div>
 <?php include('../footer.php') ?>

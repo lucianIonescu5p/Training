@@ -16,7 +16,7 @@ if (isset($_GET['id'])) {
 };
 
 $sql = 
-'SELECT * FROM products' . (      
+    'SELECT * FROM products' . (      
     count($_SESSION['cart']) ?
         ' WHERE id 
         IN (' . implode(',', array_fill(0, count($_SESSION['cart']), '?')) . ')' :
@@ -43,25 +43,13 @@ if (isset($_POST['checkout'])) {
     };
 
     if (empty($_POST['contactDetails'])) {
-        $errors['eMail'][] = trans('E-mail is required');
-    } else if (!filter_var($_POST['contactDetails'], FILTER_VALIDATE_EMAIL)) {
-        $errors['eMail'][] = trans('Invalid email format, try someone@example.com');
+        $errors['email'][] = trans('E-mail is required');
+    } elseif (!filter_var($_POST['contactDetails'], FILTER_VALIDATE_EMAIL)) {
+        $errors['email'][] = trans('Invalid email format, try someone@example.com');
     };
 
     if (!$errors) {
-
-        // log orders
-        $sql = 'INSERT INTO orders(name, contact_details, price) VALUES (:name, :contactDetails, :price)';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array('name' => $name, 'contactDetails' => $contactDetails, 'price' => $totalPrice));
-        $last_id = $conn->lastInsertId();
-
-        foreach ($_SESSION['cart'] as $product) {
-            $sql = 'INSERT INTO order_product(order_id ,product_id) VALUES (:orderId, :productId)';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':orderId' => $last_id, ':productId' => $product));
-        };
-
+        
         // mail
         $headers = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type:text/html; charset=UTF-8' . "\r\n";
@@ -107,11 +95,24 @@ if (isset($_POST['checkout'])) {
                 </body>
             </html>';
 
+        // log orders
+        $sql = 'INSERT INTO orders(name, contact_details, price) VALUES (?, ?, ?)';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$name, $contactDetails, $totalPrice]);
+        $last_id = $conn->lastInsertId();
+
+        foreach ($_SESSION['cart'] as $product) {
+            $sql = 'INSERT INTO order_product(order_id ,product_id) VALUES (?, ?)';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$last_id, $product]);
+        };
+
         mail(SHOP_MANAGER, trans('New order!'), $message, $headers);
-        $_SESSION['cart'] = array();
+        $_SESSION['cart'] = [];
         header('Location: cart.php?sent=1');
         die();
-    }
+    };
+    
 };
 
 $pageTitle = trans('Cart');
@@ -120,14 +121,14 @@ include('../header.php');
 
 <?php if (empty($_SESSION['cart'])) : ?>
 
-    <?php if(isset($_GET['sent']) && $_GET['sent']) : ?>
+    <?php if (isset($_GET['sent']) && $_GET['sent']) : ?>
         <p><?= sanitize(trans('Your order was sent successfully')) ?></p>
     <?php endif ?>
 
     <p><?= sanitize(trans('Cart is empty')) ?></p>
 
 <?php else : ?>
-    <div id="cartContainer">
+    <div>
         <p><u><?= sanitize(trans('Cart details:')) ?></u></p>
 
         <table border="1" cellpadding="3">
@@ -141,10 +142,10 @@ include('../header.php');
             </tr>
 
             <?php foreach ($rows as $row) : ?>
-            <?php $totalPrice += $row['price']; ?>
+            <?php $totalPrice += $row['price'] ?>
                 <tr>
                     <td align="middle">
-                        <?php if($row['image']) : ?>
+                        <?php if ($row['image']) : ?>
                             <img alt ="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px">
                         <?php else : ?>
                             <p><?= sanitize(trans('No image')) ?></p>
@@ -171,7 +172,7 @@ include('../header.php');
         <?php include '../errors.php' ?>
 
         <input type="text" name="contactDetails" placeholder="<?= sanitize(trans('Email Address')) ?>" value="<?= sanitize($contactDetails) ?>"><br />
-        <?php $errorKey='eMail' ?>
+        <?php $errorKey='email' ?>
         <?php include '../errors.php' ?>
 
         <textarea rows="4" cols="50" name="comments" placeholder="<?= sanitize(trans('Comment')) ?>"><?= sanitize($comments) ?></textarea> <br />
@@ -183,5 +184,4 @@ include('../header.php');
 <div class="cartWrapper">
     <a class="cartLink cartBtn" href="index.php"><?= sanitize(trans('Back to index')) ?></a>
 </div>
-
 <?php include('../footer.php') ?>

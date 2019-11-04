@@ -11,13 +11,13 @@ if (isset($_POST['submit'])) {
 
     if (empty($_POST['username'])) {
         $errors['username'][] = trans('Please insert a username');
-    } else if ($_POST['username'] !== ADMIN_NAME) {
+    } elseif ($_POST['username'] !== ADMIN_NAME) {
         $errors['username'][] = trans('Incorrect username');
     }
 
     if (empty($_POST['password'])) {
         $errors['password'][] = trans('Please insert a password');
-    } else if ($_POST['password'] !== ADMIN_PASS) {
+    } elseif ($_POST['password'] !== ADMIN_PASS) {
         $errors['password'][] = trans('Wrong password');
     }
 
@@ -42,19 +42,16 @@ include('../header.php');
 
         <label for="username"><?= sanitize(trans('Master username: ')) ?></label><br />
         <input type="text" name="username" value="<?= sanitize($name) ?>"><br />
-        <?php $errorKey='username' ?>
+        <?php $errorKey = 'username' ?>
         <?php include '../errors.php' ?>
         
         <label for="password"><?= sanitize(trans('Master passcode: ')) ?></label><br />
         <input type="password" name="password"><br />
-        <?php $errorKey='password' ?>
+        <?php $errorKey = 'password' ?>
         <?php include '../errors.php' ?>
 
         <input type="submit" name="submit" value="Log in">
 
     </form>
-
-
 </div>
-
 <?php include('../footer.php') ?>

@@ -23,4 +23,4 @@ if (empty($_SESSION['cart'])) {
  */
 function sanitize($data) {
     return htmlspecialchars($data);
-}
+};

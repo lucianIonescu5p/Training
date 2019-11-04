@@ -8,30 +8,30 @@ if ($_SESSION['authenticated']) {
     $stmt = $conn->prepare($sql);
     $res = $stmt->execute();
     $rows = $stmt->fetchAll();
-}
+};
 
 // Log out
 if (isset($_GET['logOut'])) {
     $_SESSION['authenticated'] = 0;
     header('Location: index.php');
     die();
-}
+};
 
 // Delete products
 if (isset($_GET['delete'])) {
 
-    $sql = 'SELECT * FROM products WHERE id = :id';
+    $sql = 'SELECT * FROM products WHERE id = ?';
     $stmt = $conn->prepare($sql);
-    $res = $stmt->execute(['id' => $_GET['delete']]);
+    $res = $stmt->execute([$_GET['delete']]);
     $rows = $stmt->fetch();
 
     if ($rows['image']) {
         unlink('images/' . $rows['image']);
-    }
+    };
 
-    $deleteSql = 'DELETE FROM products WHERE id = :id';
+    $deleteSql = 'DELETE FROM products WHERE id = ?';
     $stmt = $conn->prepare($deleteSql);
-    $stmt->execute(['id' => $_GET['delete']]);
+    $stmt->execute([$_GET['delete']]);
 
     header('Location: products.php');
     die();
@@ -43,7 +43,6 @@ include('../header.php');
 
 <div>
     <table border="1" cellpadding="3">
-
             <tr>
                 <th align="middle"><?= sanitize(trans('ID')) ?></th>
                 <th align="middle"><?= sanitize(trans('Title')) ?></th>
@@ -70,5 +69,4 @@ include('../header.php');
     <span><a class="cartLink" href="product.php" ><?= sanitize(trans('Add product')) ?></a></span>
     <span><a class="cartLink" href="orders.php" ><?= sanitize(trans('Orders')) ?></a></span>
 </div>
-
 <?php include('../footer.php') ?>
