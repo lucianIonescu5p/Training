@@ -29,17 +29,17 @@ if (isset($_POST['submit'])) {
 
     if (empty($_POST['title'])) {
         $errors['title'][] = trans('Please insert a title');
-    };
+    }
 
     if (empty($_POST['description'])) {
         $errors['description'][] = trans('Please insert a description');
-    };
+    }
 
     if (empty($_POST['price'])) {
         $errors['price'][] = trans('Please insert a price');
     } elseif ($_POST['price'] <= 0) {
         $errors['price'][] = trans('Please enter a positive integer value.');
-    };
+    }
 
     if ($_FILES['image']['error'] !== 4) {
 
@@ -63,21 +63,21 @@ if (isset($_POST['submit'])) {
                     move_uploaded_file($fileTmp, $fileDestination);
                 } else {
                     $errors['image'][] = trans('Image is too big!');
-                };
+                }
             } else {
                 $errors['image'][] = trans('Sorry, there was an error uploading the image');
-            };
+            }
         } else {
             $errors['image'][] = trans('You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.');
-        };
+        }
     } else {
 
         if (isset($_GET['edit']) && $_GET['edit']) {
             $image = $rows['image'];
         } else {
             $errors['image'][] = trans('Please insert an image');
-        };
-    };
+        }
+    }
 
     // insert product
     if (!$errors) {
@@ -86,11 +86,11 @@ if (isset($_POST['submit'])) {
             $sql = 'UPDATE products SET title = ?, description = ?, price = ?, image = ? WHERE products.id = ?';
             $stmt = $conn->prepare($sql);
             $stmt->execute([$title, $description, $price, (isset($_FILES['image']) && $_FILES['image'] ? $image : $rows['image']), $_GET['edit']]);
-            
+
             if ($image !== $rows['image']) {
                 unlink('images/' . $rows['image']);
             };
-            
+
             header('Location: product.php?success=1');
             die();
 
@@ -100,9 +100,9 @@ if (isset($_POST['submit'])) {
             $stmt->execute([$title, $description, $price, $image]);
             header('Location: product.php?success=1');
             die();
-        };
-    };
-};
+        }
+    }
+}
 
 $pageTitle = trans('Product');
 include('../header.php');

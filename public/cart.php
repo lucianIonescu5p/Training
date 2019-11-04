@@ -9,11 +9,11 @@ if (isset($_GET['id'])) {
 
     if ($key !== false) {
         unset($_SESSION['cart'][$key]); 
-    }; 
+    }
 
     header('Location: cart.php'); 
     die();
-};
+}
 
 $sql = 
     'SELECT * FROM products' . (      
@@ -40,13 +40,13 @@ if (isset($_POST['checkout'])) {
 
     if (empty($_POST['name'])) {
         $errors['name'][] = trans('Name is required');
-    };
+    }
 
     if (empty($_POST['contactDetails'])) {
         $errors['email'][] = trans('E-mail is required');
     } elseif (!filter_var($_POST['contactDetails'], FILTER_VALIDATE_EMAIL)) {
         $errors['email'][] = trans('Invalid email format, try someone@example.com');
-    };
+    }
 
     if (!$errors) {
         
@@ -105,15 +105,14 @@ if (isset($_POST['checkout'])) {
             $sql = 'INSERT INTO order_product(order_id ,product_id) VALUES (?, ?)';
             $stmt = $conn->prepare($sql);
             $stmt->execute([$last_id, $product]);
-        };
+        }
 
         mail(SHOP_MANAGER, trans('New order!'), $message, $headers);
         $_SESSION['cart'] = [];
         header('Location: cart.php?sent=1');
         die();
-    };
-    
-};
+    } 
+}
 
 $pageTitle = trans('Cart');
 include('../header.php');

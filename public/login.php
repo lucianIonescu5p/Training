@@ -26,7 +26,7 @@ if (isset($_POST['submit'])) {
         header('Location: products.php');
         die();
     }
-};
+}
 
 $pageTitle = trans('Login Shop 1');
 include('../header.php');

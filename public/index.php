@@ -7,7 +7,7 @@ if (isset($_GET['id']) && !in_array($_GET['id'], $_SESSION['cart'])) {
     array_push($_SESSION['cart'], $_GET['id']);
     header("Location: index.php");
     die();
-};
+}
 
 $sql = 
     'SELECT * FROM products' . (

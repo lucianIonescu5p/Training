@@ -15,7 +15,7 @@ if (isset($_GET['logOut'])) {
     $_SESSION['authenticated'] = 0;
     header('Location: index.php');
     die();
-};
+}
 
 // Delete products
 if (isset($_GET['delete'])) {
@@ -27,7 +27,7 @@ if (isset($_GET['delete'])) {
 
     if ($rows['image']) {
         unlink('images/' . $rows['image']);
-    };
+    }
 
     $deleteSql = 'DELETE FROM products WHERE id = ?';
     $stmt = $conn->prepare($deleteSql);
