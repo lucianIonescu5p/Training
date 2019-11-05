@@ -35,9 +35,7 @@ if (isset($_POST['submit'])) {
         $errors['description'][] = trans('Please insert a description');
     }
 
-    if (empty($_POST['price'])) {
-        $errors['price'][] = trans('Please insert a price');
-    } elseif ($_POST['price'] <= 0) {
+    if ($_POST['price'] <= 0) {
         $errors['price'][] = trans('Please enter a positive integer value.');
     }
 

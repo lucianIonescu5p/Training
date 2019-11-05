@@ -9,13 +9,13 @@ $errors = [];
 if (isset($_POST['submit'])) {
     $name = $_POST['username'];
 
-    if (empty($_POST['username'])) {
+    if (!strlen($_POST['username'])) {
         $errors['username'][] = trans('Please insert a username');
     } elseif ($_POST['username'] !== ADMIN_NAME) {
         $errors['username'][] = trans('Incorrect username');
     }
 
-    if (empty($_POST['password'])) {
+    if (!strlen($_POST['password'])) {
         $errors['password'][] = trans('Please insert a password');
     } elseif ($_POST['password'] !== ADMIN_PASS) {
         $errors['password'][] = trans('Wrong password');
