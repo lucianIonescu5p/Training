@@ -18,8 +18,8 @@ if (isset($_GET['edit']) && $_GET['edit']) {
     $description = $rows['description'];
     $price = $rows['price'];
     $image = $rows['image'];
-
-};
+    
+}
 
 // data validation
 if (isset($_POST['submit'])) {
@@ -27,11 +27,11 @@ if (isset($_POST['submit'])) {
     $description = $_POST['description'];
     $price = $_POST['price'];
 
-    if (empty($_POST['title'])) {
+    if (!strlen($_POST['title'])) {
         $errors['title'][] = trans('Please insert a title');
     }
 
-    if (empty($_POST['description'])) {
+    if (!strlen($_POST['description'])) {
         $errors['description'][] = trans('Please insert a description');
     }
 
@@ -60,6 +60,7 @@ if (isset($_POST['submit'])) {
                 if ($fileSize < 150000) {
                     $image = uniqid('', true) . '.' . $fileActualExt;
                     $fileDestination = 'images/' . basename($image);
+
                     move_uploaded_file($fileTmp, $fileDestination);
                 } else {
                     $errors['image'][] = trans('Image is too big!');
@@ -71,7 +72,6 @@ if (isset($_POST['submit'])) {
             $errors['image'][] = trans('You cannot upload these types of files. Only jpg/jpeg/pgn/gif allowed.');
         }
     } else {
-
         if (isset($_GET['edit']) && $_GET['edit']) {
             $image = $rows['image'];
         } else {
@@ -89,7 +89,7 @@ if (isset($_POST['submit'])) {
 
             if ($image !== $rows['image']) {
                 unlink('images/' . $rows['image']);
-            };
+            }
 
             header('Location: product.php?success=1');
             die();
@@ -98,6 +98,7 @@ if (isset($_POST['submit'])) {
             $sql = 'INSERT INTO products(title, description, price, image) VALUES (?, ?, ?, ?)';
             $stmt = $conn->prepare($sql);
             $stmt->execute([$title, $description, $price, $image]);
+
             header('Location: product.php?success=1');
             die();
         }
@@ -131,12 +132,13 @@ include('../header.php');
     <?php include '../errors.php' ?>
 
     <?php if (isset($_GET['edit']) && $_GET['edit']) : ?>
-        <img src="images/<?= sanitize($rows['image']) ?>">
+        <img alt="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($rows['image']) ?>">
     <?php endif ?>
     <br />
 
     <input class="cartLink cartBtn" type="submit" name="submit" value="<?= sanitize(trans('Submit')) ?>">
-</form> <br />
+</form>
 
 <a class="cartLink cartBtn" href="products.php"><?= trans(sanitize('Products')) ?></a>
+
 <?php include('../footer.php') ?>

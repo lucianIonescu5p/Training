@@ -4,7 +4,6 @@ require_once '../common.php';
 
 // remove items from the cart
 if (isset($_GET['id'])) {
-
     $key = array_search($_GET['id'], $_SESSION['cart']);  
 
     if ($key !== false) {
@@ -38,11 +37,11 @@ if (isset($_POST['checkout'])) {
     $contactDetails = $_POST['contactDetails'];
     $comments = $_POST['comments'];
 
-    if (empty($_POST['name'])) {
+    if (!strlen($_POST['name'])) {
         $errors['name'][] = trans('Name is required');
     }
 
-    if (empty($_POST['contactDetails'])) {
+    if (!strlen($_POST['contactDetails'])) {
         $errors['email'][] = trans('E-mail is required');
     } elseif (!filter_var($_POST['contactDetails'], FILTER_VALIDATE_EMAIL)) {
         $errors['email'][] = trans('Invalid email format, try someone@example.com');
@@ -54,13 +53,13 @@ if (isset($_POST['checkout'])) {
         $headers = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type:text/html; charset=UTF-8' . "\r\n";
         $headers .= 'From: <' . sanitize($contactDetails) . '>' . "\r\n";
+
         $message = '
             <html>
                 <head>
                     <title>' . sanitize(trans('Order')) . '</title>
                 </head>
                 <body>
-
                     <p>' . sanitize(trans('Hello, here\'s an order from')) . ' ' . sanitize($name) . '</p>
                     <p>' . sanitize(trans('At: ')) . sanitize(date('d/M/Y H:i:s')) . '</p>
                     <p>' . sanitize(trans('Order details are:')) . '</p>
@@ -84,6 +83,7 @@ if (isset($_POST['checkout'])) {
                                     <td align="middle">' . sanitize($row['price']) . '</td>
                                 </tr> ';
                         }
+
                     $message .= ' 
                         <tr>
                             <td colspan="3" align="middle"><b>' . sanitize(trans('Total price')) . '</b></td>
@@ -108,7 +108,9 @@ if (isset($_POST['checkout'])) {
         }
 
         mail(SHOP_MANAGER, trans('New order!'), $message, $headers);
+
         $_SESSION['cart'] = [];
+
         header('Location: cart.php?sent=1');
         die();
     } 
@@ -118,7 +120,7 @@ $pageTitle = trans('Cart');
 include('../header.php');
 ?>
 
-<?php if (empty($_SESSION['cart'])) : ?>
+<?php if (!$_SESSION['cart']) : ?>
 
     <?php if (isset($_GET['sent']) && $_GET['sent']) : ?>
         <p><?= sanitize(trans('Your order was sent successfully')) ?></p>
@@ -131,7 +133,6 @@ include('../header.php');
         <p><u><?= sanitize(trans('Cart details:')) ?></u></p>
 
         <table border="1" cellpadding="3">
-
             <tr>
                 <th align="middle"><?= sanitize(trans('Product')) ?></th>
                 <th align="middle"><?= sanitize(trans('Name')) ?></th>
@@ -141,7 +142,7 @@ include('../header.php');
             </tr>
 
             <?php foreach ($rows as $row) : ?>
-            <?php $totalPrice += $row['price'] ?>
+                <?php $totalPrice += $row['price'] ?>
                 <tr>
                     <td align="middle">
                         <?php if ($row['image']) : ?>
@@ -155,7 +156,7 @@ include('../header.php');
                     <td align="middle"><?= sanitize($row['price']) ?></td>
                     <td align="middle"><a href="?id=<?= sanitize($row['id'])?>"><?= trans('Remove') ?></a></td>
                 </tr>
-                <?php endforeach ?>
+            <?php endforeach ?>
 
             <tr>
                 <td colspan="3" align="middle"><b><?= sanitize(trans('Total price')) ?></b></td>
@@ -165,7 +166,6 @@ include('../header.php');
     </div>
 
     <form method="POST">
-
         <input type="text" name="name" value="<?= sanitize($name) ?>" placeholder="<?= sanitize(trans('Name ')) ?>"><br />
         <?php $errorKey='name' ?>
         <?php include '../errors.php' ?>
@@ -183,4 +183,5 @@ include('../header.php');
 <div class="cartWrapper">
     <a class="cartLink cartBtn" href="index.php"><?= sanitize(trans('Back to index')) ?></a>
 </div>
+
 <?php include('../footer.php') ?>

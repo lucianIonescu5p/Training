@@ -5,6 +5,7 @@ require_once '../common.php';
 // add items to the cart
 if (isset($_GET['id']) && !in_array($_GET['id'], $_SESSION['cart'])) {
     array_push($_SESSION['cart'], $_GET['id']);
+
     header("Location: index.php");
     die();
 }
@@ -23,6 +24,7 @@ $rows = $stmt->fetchAll();
 
 if (isset($_GET['log_out'])) {
     unset($_SESSION['authenticated']);
+
     header('Location: index.php');
     die();
 }
@@ -57,7 +59,6 @@ include('../header.php');
                     <td align="middle"><a href="?id=<?= sanitize($row['id']) ?>"><?= sanitize(trans('Add Item')) ?></a></td>
                 </tr>
             <?php endforeach ?>  
-
         </table>  
     </div>
 
@@ -65,4 +66,5 @@ include('../header.php');
         <a class="cartLink" href="cart.php"><?= sanitize(trans('Go to cart')) ?></a>
     </div>
 </div>
+
 <?php include('../footer.php') ?>

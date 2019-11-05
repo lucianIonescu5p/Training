@@ -24,3 +24,16 @@ if (empty($_SESSION['cart'])) {
 function sanitize($data) {
     return htmlspecialchars($data);
 };
+
+/**
+ * Translation function
+ * 
+ * @param $label
+ * @return mixed
+ */
+function trans($label) 
+{
+    include('translations.php');
+
+    return isset($translations[$label]) ? $translations[$label] : $label;
+};

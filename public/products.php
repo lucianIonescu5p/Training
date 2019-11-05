@@ -3,30 +3,28 @@
 require_once '../common.php';
 require_once '../auth.php';
 
-if ($_SESSION['authenticated']) {
-    $sql = 'SELECT * FROM products';
-    $stmt = $conn->prepare($sql);
-    $res = $stmt->execute();
-    $rows = $stmt->fetchAll();
-};
+$sql = 'SELECT * FROM products';
+$stmt = $conn->prepare($sql);
+$res = $stmt->execute();
+$rows = $stmt->fetchAll();
 
 // Log out
 if (isset($_GET['logOut'])) {
     $_SESSION['authenticated'] = 0;
+
     header('Location: index.php');
     die();
 }
 
 // Delete products
 if (isset($_GET['delete'])) {
-
     $sql = 'SELECT * FROM products WHERE id = ?';
     $stmt = $conn->prepare($sql);
     $res = $stmt->execute([$_GET['delete']]);
-    $rows = $stmt->fetch();
+    $row = $stmt->fetch();
 
-    if ($rows['image']) {
-        unlink('images/' . $rows['image']);
+    if ($row['image']) {
+        unlink('images/' . $row['image']);
     }
 
     $deleteSql = 'DELETE FROM products WHERE id = ?';
@@ -52,7 +50,7 @@ include('../header.php');
                 <th align="middle"><?= sanitize(trans('Delete')) ?></th>
             </tr>
 
-            <?php foreach($rows as $row): ?>
+            <?php foreach ($rows as $row): ?>
                 <tr>
                     <td align="middle"><img alt="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px"></td>
                     <td align="middle"><?= sanitize($row['title']) ?></td>
@@ -69,4 +67,5 @@ include('../header.php');
     <span><a class="cartLink" href="product.php" ><?= sanitize(trans('Add product')) ?></a></span>
     <span><a class="cartLink" href="orders.php" ><?= sanitize(trans('Orders')) ?></a></span>
 </div>
+
 <?php include('../footer.php') ?>
