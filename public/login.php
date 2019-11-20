@@ -50,7 +50,7 @@ include('../header.php');
         <?php $errorKey = 'password' ?>
         <?php include '../errors.php' ?>
 
-        <input type="submit" name="submit" value="Log in">
+        <input type="submit" name="submit" value="<?= sanitize(trans('Log in')) ?>">
 
     </form>
 </div>

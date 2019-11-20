@@ -18,7 +18,7 @@ if (isset($_GET['edit']) && $_GET['edit']) {
     $description = $rows['description'];
     $price = $rows['price'];
     $image = $rows['image'];
-    
+ 
 }
 
 // data validation
@@ -39,7 +39,7 @@ if (isset($_POST['submit'])) {
         $errors['price'][] = trans('Please enter a positive integer value.');
     }
 
-    if ($_FILES['image']['error'] !== 4) {
+    if (!$_FILES['image']['error']) {
 
         // image validation
         $fileName = $_FILES['image']['name'];
@@ -51,9 +51,19 @@ if (isset($_POST['submit'])) {
         $fileExt = explode('.', $fileName);
         $fileActualExt = strtolower(end($fileExt));
 
-        $allowed = array('jpg', 'jpeg', 'png', 'gif');
+        $allowed = array(
+            'image/jpeg', 
+            'image/jpeg', 
+            'image/jpeg',
+            'image/gif',
+            'image/bmp',
+            'image/vnd.microsoft.icon',
+            'image/tiff',
+            'image/tiff',
+            'image/svg+xml',
+            'image/svg+xml');
 
-        if (in_array($fileActualExt, $allowed)) {
+        if (in_array($fileType, $allowed)) {
             if ($fileError === 0) {
                 if ($fileSize < 150000) {
                     $image = uniqid('', true) . '.' . $fileActualExt;
@@ -73,7 +83,7 @@ if (isset($_POST['submit'])) {
         if (isset($_GET['edit']) && $_GET['edit']) {
             $image = $rows['image'];
         } else {
-            $errors['image'][] = trans('Please insert an image');
+            $errors['image'][] = trans('There was an error');
         }
     }
 
@@ -107,7 +117,7 @@ $pageTitle = trans('Product');
 include('../header.php');
 ?>
 
-<form method="POST" <?= (isset($_GET['edit']) && $_GET['edit']) ? sanitize(trans('action=product.php?edit=' . $_GET['edit'])) : '' ?> enctype="multipart/form-data">
+<form method="POST" <?= (isset($_GET['edit']) && $_GET['edit']) ? 'action=product.php?edit=' . $_GET['edit'] : '' ?> enctype="multipart/form-data">
 
     <?php if (isset($_GET['success'])) : ?>
         <p class="success"><?= trans('Product updated') ?></p>

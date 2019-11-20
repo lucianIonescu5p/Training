@@ -3,11 +3,6 @@
 require_once '../common.php';
 require_once '../auth.php';
 
-$sql = 'SELECT * FROM products';
-$stmt = $conn->prepare($sql);
-$res = $stmt->execute();
-$rows = $stmt->fetchAll();
-
 // Log out
 if (isset($_GET['logOut'])) {
     $_SESSION['authenticated'] = 0;
@@ -15,6 +10,11 @@ if (isset($_GET['logOut'])) {
     header('Location: index.php');
     die();
 }
+
+$sql = 'SELECT * FROM products';
+$stmt = $conn->prepare($sql);
+$res = $stmt->execute();
+$rows = $stmt->fetchAll();
 
 // Delete products
 if (isset($_GET['delete'])) {
