@@ -41,6 +41,7 @@ $totalPrice = $priceStmt->fetch();
 $name = $contactDetails = $comments = '';
 $errors = [];
 
+$timestamp = date("Y-m-d H:i:s");
 // validation
 if (isset($_POST['checkout'])) {
 
@@ -106,15 +107,15 @@ if (isset($_POST['checkout'])) {
             </html>';
 
         // log orders
-        $sql = 'INSERT INTO orders(name, email) VALUES (?, ?)';
+        $sql = 'INSERT INTO orders(name, email, created_at, updated_at) VALUES (?, ?, ?, ?)';
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$name, $contactDetails]);
+        $stmt->execute([$name, $contactDetails, $timestamp, $timestamp]);
         $last_id = $conn->lastInsertId();
 
         foreach ($_SESSION['cart'] as $product) {
-            $sql = 'INSERT INTO order_product(order_id ,product_id) VALUES (?, ?)';
+            $sql = 'INSERT INTO order_product(order_id ,product_id, created_at, updated_at) VALUES (?, ?, ?, ?)';
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$last_id, $product]);
+            $stmt->execute([$last_id, $product, $timestamp, $timestamp]);
         }
 
         mail(SHOP_MANAGER, trans('New order!'), $message, $headers);
