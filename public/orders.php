@@ -15,7 +15,7 @@ include('../header.php');
 <?php if (empty($rows)) : ?>
     <p><?= sanitize(trans('No orders')) ?></p>
 <?php else : ?>
-    
+    123
 <?php endif ?>
 
 <div class="productsBtn">
