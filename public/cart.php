@@ -26,8 +26,19 @@ $stmt = $conn->prepare($sql);
 $res = $stmt->execute(array_values($_SESSION['cart']));
 $rows = $stmt->fetchAll();
 
+// using SQL aggregated functions to sum the total price of the products
+$totalPriceSql = 'SELECT SUM(price) AS value_sum FROM products' . (      
+    count($_SESSION['cart']) ?
+        ' WHERE id 
+        IN (' . implode(',', array_fill(0, count($_SESSION['cart']), '?')) . ')' :
+        ''
+    );
+
+$priceStmt = $conn->prepare($totalPriceSql);
+$priceRes = $priceStmt->execute(array_values($_SESSION['cart']));
+$totalPrice = $priceStmt->fetch();
+
 $name = $contactDetails = $comments = '';
-$totalPrice = 0;
 $errors = [];
 
 // validation
@@ -74,7 +85,6 @@ if (isset($_POST['checkout'])) {
                         </tr> ';
 
                         foreach ($rows as $row) {
-                            $totalPrice += $row['price'];
                             $message .= ' 
                                 <tr>
                                     <td align="middle"><img alt="' .sanitize(trans('Product Image')). '" src="' . URL . '/images/' . $row['image'] . '" width="70px" height="70px"></td>
@@ -87,7 +97,7 @@ if (isset($_POST['checkout'])) {
                     $message .= ' 
                         <tr>
                             <td colspan="3" align="middle"><b>' . sanitize(trans('Total price')) . '</b></td>
-                            <td align="middle"><b>' . sanitize($totalPrice) . '</b></td>
+                            <td align="middle"><b>' . sanitize($totalPrice['value_sum']) . '</b></td>
                         </tr>
                     </table>
                     <p> ' . sanitize(trans('Contact details:')) . ' ' . sanitize($contactDetails) . '</p>
@@ -96,9 +106,9 @@ if (isset($_POST['checkout'])) {
             </html>';
 
         // log orders
-        $sql = 'INSERT INTO orders(name, contact_details, price) VALUES (?, ?, ?)';
+        $sql = 'INSERT INTO orders(name, email) VALUES (?, ?)';
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$name, $contactDetails, $totalPrice]);
+        $stmt->execute([$name, $contactDetails]);
         $last_id = $conn->lastInsertId();
 
         foreach ($_SESSION['cart'] as $product) {
@@ -142,7 +152,6 @@ include('../header.php');
             </tr>
 
             <?php foreach ($rows as $row) : ?>
-                <?php $totalPrice += $row['price'] ?>
                 <tr>
                     <td align="middle">
                         <?php if ($row['image']) : ?>
@@ -160,7 +169,7 @@ include('../header.php');
 
             <tr>
                 <td colspan="3" align="middle"><b><?= sanitize(trans('Total price')) ?></b></td>
-                <td colspan="2" align="middle"><b><?= sanitize($totalPrice) ?></b></td>
+                <td colspan="2" align="middle"><b><?= sanitize($totalPrice['value_sum']) ?></b></td>
             </tr>
         </table>
     </div>
