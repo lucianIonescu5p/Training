@@ -113,9 +113,7 @@ $pageTitle = trans('Product');
 include('../header.php');
 ?>
 
-    <form method="POST" <?= isset($_GET['edit']) && $_GET['edit'] ? 'action="product.php?edit="' . $_GET['edit'] : '' ?>
-        enctype="multipart/form-data">
-
+    <form method="POST" enctype="multipart/form-data">
         <?php if (isset($_GET['success'])) : ?>
             <p class="success"><?= trans('Product updated') ?></p>
         <?php endif ?>
