@@ -11,11 +11,6 @@ if (isset($_GET['logOut'])) {
     die();
 }
 
-$sql = 'SELECT * FROM products';
-$stmt = $conn->prepare($sql);
-$res = $stmt->execute();
-$rows = $stmt->fetchAll();
-
 // Delete products
 if (isset($_GET['delete'])) {
     $sql = 'SELECT * FROM products WHERE id = ?';
@@ -35,12 +30,17 @@ if (isset($_GET['delete'])) {
     die();
 }
 
+$sql = 'SELECT * FROM products';
+$stmt = $conn->prepare($sql);
+$res = $stmt->execute();
+$rows = $stmt->fetchAll();
+
 $pageTitle = trans('Products');
 include('../header.php');
 ?>
 
-<div>
-    <table border="1" cellpadding="3">
+    <div>
+        <table border="1" cellpadding="3">
             <tr>
                 <th align="middle"><?= sanitize(trans('ID')) ?></th>
                 <th align="middle"><?= sanitize(trans('Title')) ?></th>
@@ -52,20 +52,24 @@ include('../header.php');
 
             <?php foreach ($rows as $row): ?>
                 <tr>
-                    <td align="middle"><img alt="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px"></td>
+                    <td align="middle"><img alt="<?= sanitize(trans('Product image')) ?>"
+                                            src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px"></td>
                     <td align="middle"><?= sanitize($row['title']) ?></td>
                     <td align="middle"><?= sanitize($row['description']) ?></td>
                     <td align="middle"><?= sanitize($row['price']) ?></td>
-                    <td align="middle"><a href="product.php?edit=<?= sanitize($row['id']) ?>"><?= sanitize(trans('Edit')) ?></a></td>
-                    <td align="middle"><a href="?delete=<?= sanitize($row['id']) ?>"><?= sanitize(trans('Delete')) ?></a></td>
+                    <td align="middle"><a
+                                href="product.php?edit=<?= sanitize($row['id']) ?>"><?= sanitize(trans('Edit')) ?></a>
+                    </td>
+                    <td align="middle"><a
+                                href="?delete=<?= sanitize($row['id']) ?>"><?= sanitize(trans('Delete')) ?></a></td>
                 </tr>
             <?php endforeach ?>
-    </table>
-</div>
+        </table>
+    </div>
 
-<div class="productsBtn">
-    <span><a class="cartLink" href="product.php" ><?= sanitize(trans('Add product')) ?></a></span>
-    <span><a class="cartLink" href="orders.php" ><?= sanitize(trans('Orders')) ?></a></span>
-</div>
+    <div class="productsBtn">
+        <span><a class="cartLink" href="product.php"><?= sanitize(trans('Add product')) ?></a></span>
+        <span><a class="cartLink" href="orders.php"><?= sanitize(trans('Orders')) ?></a></span>
+    </div>
 
 <?php include('../footer.php') ?>

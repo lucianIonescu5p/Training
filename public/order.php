@@ -23,15 +23,15 @@ $pageTitle = trans('Order');
 include('../header.php');
 ?>
 
-<?php if (empty($order)) : ?>
-    <p><?= sanitize(trans('No orders')) ?></p>
-<?php else : ?>
+    <?php if (empty($order)) : ?>
+        <p><?= sanitize(trans('No orders')) ?></p>
+    <?php else : ?>
 
-    <p><?= sanitize(trans('Order')) . ' ' . $order[0]['order_id'] ?></p>
-    <p><?= sanitize(trans('Name')) . ': ' . $order[0]['name'] ?></p>
-    <p><?= sanitize(trans('Email')) . ': ' . $order[0]['email'] ?></p>
-    
-    <div class="table">
+        <p><?= sanitize(trans('Order')) . ' ' . $order[0]['order_id'] ?></p>
+        <p><?= sanitize(trans('Name')) . ': ' . $order[0]['name'] ?></p>
+        <p><?= sanitize(trans('Email')) . ': ' . $order[0]['email'] ?></p>
+
+        <div class="table">
         <table border="1" cellpadding="3">
             <tr>
                 <th align="middle"><?= sanitize(trans('Product')) ?></th>
@@ -46,7 +46,8 @@ include('../header.php');
                     <td align="middle"><?= sanitize($row['product_id']) ?></td>
                     <td align="middle">
                         <?php if ($row['image']) : ?>
-                            <img alt ="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px">
+                            <img alt="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($row['image']) ?>"
+                                width="70px" height="70px">
                         <?php else : ?>
                             <p><?= sanitize(trans('No image')) ?></p>
                         <?php endif ?>
@@ -55,11 +56,11 @@ include('../header.php');
                     <td align="middle"><?= sanitize($row['description']) ?></td>
                     <td align="middle"><?= sanitize($row['price']) ?></td>
                 </tr>
-            <?php endforeach ?>  
-        </table>  
-<?php endif ?>
+            <?php endforeach ?>
+        </table>
+    <?php endif ?>
 
-<div class="productsBtn">
-    <span><a class="cartLink cartBtn" href="orders.php"><?= sanitize(trans('Orders')) ?></a></span>
-</div>
+    <div class="productsBtn">
+        <span><a class="cartLink cartBtn" href="orders.php"><?= sanitize(trans('Orders')) ?></a></span>
+    </div>
 <?php include('../footer.php') ?>

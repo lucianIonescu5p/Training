@@ -4,18 +4,18 @@ require_once '../common.php';
 
 // remove items from the cart
 if (isset($_GET['id'])) {
-    $key = array_search($_GET['id'], $_SESSION['cart']);  
+    $key = array_search($_GET['id'], $_SESSION['cart']);
 
     if ($key !== false) {
-        unset($_SESSION['cart'][$key]); 
+        unset($_SESSION['cart'][$key]);
     }
 
-    header('Location: cart.php'); 
+    header('Location: cart.php');
     die();
 }
 
-$sql = 
-    'SELECT * FROM products' . (      
+$sql =
+    'SELECT * FROM products' . (
     count($_SESSION['cart']) ?
         ' WHERE id 
         IN (' . implode(',', array_fill(0, count($_SESSION['cart']), '?')) . ')' :
@@ -27,7 +27,7 @@ $res = $stmt->execute(array_values($_SESSION['cart']));
 $rows = $stmt->fetchAll();
 
 // using SQL aggregated functions to sum the total price of the products
-$totalPriceSql = 'SELECT SUM(price) AS value_sum FROM products' . (      
+$totalPriceSql = 'SELECT SUM(price) AS value_sum FROM products' . (
     count($_SESSION['cart']) ?
         ' WHERE id 
         IN (' . implode(',', array_fill(0, count($_SESSION['cart']), '?')) . ')' :
@@ -60,7 +60,7 @@ if (isset($_POST['checkout'])) {
     }
 
     if (!$errors) {
-        
+
         // mail
         $headers = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type:text/html; charset=UTF-8' . "\r\n";
@@ -85,17 +85,17 @@ if (isset($_POST['checkout'])) {
                             <th align="middle">' . sanitize(trans('Price')) . ' </th>
                         </tr> ';
 
-                        foreach ($rows as $row) {
-                            $message .= ' 
+        foreach ($rows as $row) {
+            $message .= ' 
                                 <tr>
-                                    <td align="middle"><img alt="' .sanitize(trans('Product Image')). '" src="' . URL . '/images/' . $row['image'] . '" width="70px" height="70px"></td>
+                                    <td align="middle"><img alt="' . sanitize(trans('Product Image')) . '" src="' . URL . '/images/' . $row['image'] . '" width="70px" height="70px"></td>
                                     <td align="middle">' . sanitize($row['title']) . '</td>
                                     <td align="middle">' . sanitize($row['description']) . '</td>
                                     <td align="middle">' . sanitize($row['price']) . '</td>
                                 </tr> ';
-                        }
+        }
 
-                    $message .= ' 
+        $message .= ' 
                         <tr>
                             <td colspan="3" align="middle"><b>' . sanitize(trans('Total price')) . '</b></td>
                             <td align="middle"><b>' . sanitize($totalPrice['value_sum']) . '</b></td>
@@ -124,74 +124,78 @@ if (isset($_POST['checkout'])) {
 
         header('Location: cart.php?sent=1');
         die();
-    } 
+    }
 }
 
 $pageTitle = trans('Cart');
 include('../header.php');
 ?>
 
-<?php if (!$_SESSION['cart']) : ?>
+    <?php if (!$_SESSION['cart']) : ?>
 
-    <?php if (isset($_GET['sent']) && $_GET['sent']) : ?>
-        <p><?= sanitize(trans('Your order was sent successfully')) ?></p>
+        <?php if (isset($_GET['sent']) && $_GET['sent']) : ?>
+            <p><?= sanitize(trans('Your order was sent successfully')) ?></p>
+        <?php endif ?>
+
+        <p><?= sanitize(trans('Cart is empty')) ?></p>
+
+    <?php else : ?>
+        <div>
+            <p><u><?= sanitize(trans('Cart details:')) ?></u></p>
+
+            <table border="1" cellpadding="3">
+                <tr>
+                    <th align="middle"><?= sanitize(trans('Product')) ?></th>
+                    <th align="middle"><?= sanitize(trans('Name')) ?></th>
+                    <th align="middle"><?= sanitize(trans('Description')) ?></th>
+                    <th align="middle"><?= sanitize(trans('Price')) ?></th>
+                    <th align="middle"><?= sanitize(trans('Remove from cart')) ?></th>
+                </tr>
+
+                <?php foreach ($rows as $row) : ?>
+                    <tr>
+                        <td align="middle">
+                            <?php if ($row['image']) : ?>
+                                <img alt="<?= sanitize(trans('Product image')) ?>"
+                                    src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px">
+                            <?php else : ?>
+                                <p><?= sanitize(trans('No image')) ?></p>
+                            <?php endif ?>
+                        </td>
+                        <td align="middle"><?= sanitize($row['title']) ?></td>
+                        <td align="middle"><?= sanitize($row['description']) ?></td>
+                        <td align="middle"><?= sanitize($row['price']) ?></td>
+                        <td align="middle"><a href="?id=<?= sanitize($row['id']) ?>"><?= trans('Remove') ?></a></td>
+                    </tr>
+                <?php endforeach ?>
+
+                <tr>
+                    <td colspan="3" align="middle"><b><?= sanitize(trans('Total price')) ?></b></td>
+                    <td colspan="2" align="middle"><b><?= sanitize($totalPrice['value_sum']) ?></b></td>
+                </tr>
+            </table>
+        </div>
+
+        <form method="POST">
+            <input type="text" name="name" value="<?= sanitize($name) ?>"
+                placeholder="<?= sanitize(trans('Name ')) ?>"><br/>
+            <?php $errorKey = 'name' ?>
+            <?php include '../errors.php' ?>
+
+            <input type="text" name="contactDetails" placeholder="<?= sanitize(trans('Email Address')) ?>"
+                value="<?= sanitize($contactDetails) ?>"><br/>
+            <?php $errorKey = 'email' ?>
+            <?php include '../errors.php' ?>
+
+            <textarea rows="4" cols="50" name="comments"
+                    placeholder="<?= sanitize(trans('Comment')) ?>"><?= sanitize($comments) ?></textarea> <br/>
+
+            <input type="submit" name="checkout" value="<?= sanitize(trans('Checkout')) ?>">
+        </form>
     <?php endif ?>
 
-    <p><?= sanitize(trans('Cart is empty')) ?></p>
-
-<?php else : ?>
-    <div>
-        <p><u><?= sanitize(trans('Cart details:')) ?></u></p>
-
-        <table border="1" cellpadding="3">
-            <tr>
-                <th align="middle"><?= sanitize(trans('Product')) ?></th>
-                <th align="middle"><?= sanitize(trans('Name')) ?></th>
-                <th align="middle"><?= sanitize(trans('Description')) ?></th>
-                <th align="middle"><?= sanitize(trans('Price')) ?></th>
-                <th align="middle"><?= sanitize(trans('Remove from cart')) ?></th>
-            </tr>
-
-            <?php foreach ($rows as $row) : ?>
-                <tr>
-                    <td align="middle">
-                        <?php if ($row['image']) : ?>
-                            <img alt ="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($row['image']) ?>" width="70px" height="70px">
-                        <?php else : ?>
-                            <p><?= sanitize(trans('No image')) ?></p>
-                        <?php endif ?>
-                    </td>
-                    <td align="middle"><?= sanitize($row['title']) ?></td>
-                    <td align="middle"><?= sanitize($row['description']) ?></td>
-                    <td align="middle"><?= sanitize($row['price']) ?></td>
-                    <td align="middle"><a href="?id=<?= sanitize($row['id'])?>"><?= trans('Remove') ?></a></td>
-                </tr>
-            <?php endforeach ?>
-
-            <tr>
-                <td colspan="3" align="middle"><b><?= sanitize(trans('Total price')) ?></b></td>
-                <td colspan="2" align="middle"><b><?= sanitize($totalPrice['value_sum']) ?></b></td>
-            </tr>
-        </table>
+    <div class="cartWrapper">
+        <a class="cartLink cartBtn" href="index.php"><?= sanitize(trans('Back to index')) ?></a>
     </div>
-
-    <form method="POST">
-        <input type="text" name="name" value="<?= sanitize($name) ?>" placeholder="<?= sanitize(trans('Name ')) ?>"><br />
-        <?php $errorKey='name' ?>
-        <?php include '../errors.php' ?>
-
-        <input type="text" name="contactDetails" placeholder="<?= sanitize(trans('Email Address')) ?>" value="<?= sanitize($contactDetails) ?>"><br />
-        <?php $errorKey='email' ?>
-        <?php include '../errors.php' ?>
-
-        <textarea rows="4" cols="50" name="comments" placeholder="<?= sanitize(trans('Comment')) ?>"><?= sanitize($comments) ?></textarea> <br />
-
-        <input type="submit" name="checkout" value="<?= sanitize(trans('Checkout')) ?>">
-    </form>
-<?php endif ?>
-
-<div class="cartWrapper">
-    <a class="cartLink cartBtn" href="index.php"><?= sanitize(trans('Back to index')) ?></a>
-</div>
 
 <?php include('../footer.php') ?>

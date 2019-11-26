@@ -8,7 +8,7 @@ body {
 
 }
 
-.container{
+.container {
 
     width: 70vw;
     height: auto;
@@ -16,11 +16,11 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top:20px;
+    margin-top: 20px;
 
 }
 
-.cartLink{
+.cartLink {
 
     text-decoration: none;
     font-size: 20px;
@@ -29,18 +29,20 @@ body {
     padding: 10px 15px 10px 15px;
     border: 1px;
     border-radius: 10px;
-    background-color: purple; 
-  
+    background-color: purple;
+
 }
-.cartLink:hover{
+
+.cartLink:hover {
     color: purple;
     background-color: goldenrod;
 }
-.cartWrapper{
-    margin-top:15px;
+
+.cartWrapper {
+    margin-top: 15px;
 }
 
-.login{
+.login {
     text-decoration: none;
     font-size: 20px;
     font-weight: 700;
@@ -50,23 +52,25 @@ body {
     border-radius: 10px;
     background-color: purple;
 }
-.login:hover{
+
+.login:hover {
     color: purple;
     background-color: goldenrod;
 }
-.loginWrapper{
-    margin-top:10px;
+
+.loginWrapper {
+    margin-top: 10px;
 }
 
-.error{
+.error {
     color: red;
 }
 
-.productsBtn{
+.productsBtn {
     margin-top: 20px;
 }
 
-.success{
+.success {
     color: green;
 }
 
@@ -75,7 +79,8 @@ body {
     box-shadow: 2px 2px 2px -1px rgb(53, 10, 10);
     background-color: red;
 }
-.errorTxt{
+
+.errorTxt {
     text-align: center;
     color: white;
 }

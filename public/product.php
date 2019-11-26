@@ -18,7 +18,7 @@ if (isset($_GET['edit']) && $_GET['edit']) {
     $description = $rows['description'];
     $price = $rows['price'];
     $image = $rows['image'];
- 
+
 }
 
 // data validation
@@ -52,15 +52,11 @@ if (isset($_POST['submit'])) {
         $fileActualExt = strtolower(end($fileExt));
 
         $allowed = array(
-            'image/jpeg', 
-            'image/jpeg', 
             'image/jpeg',
             'image/gif',
             'image/bmp',
             'image/vnd.microsoft.icon',
             'image/tiff',
-            'image/tiff',
-            'image/svg+xml',
             'image/svg+xml');
 
         if (in_array($fileType, $allowed)) {
@@ -117,36 +113,40 @@ $pageTitle = trans('Product');
 include('../header.php');
 ?>
 
-<form method="POST" action="product.php<?= isset($_GET['edit']) && $_GET['edit'] ? '?edit=' . $_GET['edit'] : '' ?>" enctype="multipart/form-data">
+    <form method="POST" <?= isset($_GET['edit']) && $_GET['edit'] ? 'action="product.php?edit="' . $_GET['edit'] : '' ?>
+        enctype="multipart/form-data">
 
-    <?php if (isset($_GET['success'])) : ?>
-        <p class="success"><?= trans('Product updated') ?></p>
-    <?php endif ?>
+        <?php if (isset($_GET['success'])) : ?>
+            <p class="success"><?= trans('Product updated') ?></p>
+        <?php endif ?>
 
-    <input type="text" name="title" value="<?= sanitize($title) ?>" placeholder="<?= sanitize(trans('Insert product title')) ?>"> <br />
-    <?php $errorKey = 'title' ?>
-    <?php include '../errors.php' ?>
+        <input type="text" name="title" value="<?= sanitize($title) ?>"
+            placeholder="<?= sanitize(trans('Insert product title')) ?>"> <br/>
+        <?php $errorKey = 'title' ?>
+        <?php include '../errors.php' ?>
 
-    <input type="text" name="description" value="<?= sanitize($description) ?>" placeholder="<?= sanitize(trans('Insert product description')) ?>"> <br />
-    <?php $errorKey = 'description' ?>
-    <?php include '../errors.php' ?>
+        <input type="text" name="description" value="<?= sanitize($description) ?>"
+            placeholder="<?= sanitize(trans('Insert product description')) ?>"> <br/>
+        <?php $errorKey = 'description' ?>
+        <?php include '../errors.php' ?>
 
-    <input type="number" name="price" value="<?= sanitize($price) ?>" placeholder="<?= sanitize(trans('Insert product price')) ?>"> <br />
-    <?php $errorKey = 'price' ?>
-    <?php include '../errors.php' ?>
+        <input type="number" name="price" value="<?= sanitize($price) ?>"
+            placeholder="<?= sanitize(trans('Insert product price')) ?>"> <br/>
+        <?php $errorKey = 'price' ?>
+        <?php include '../errors.php' ?>
 
-    <input type="file" name="image" placeholder="<?= sanitize(trans('Insert product image')) ?>" ><br />
-    <?php $errorKey = 'image' ?>
-    <?php include '../errors.php' ?>
+        <input type="file" name="image" placeholder="<?= sanitize(trans('Insert product image')) ?>"><br/>
+        <?php $errorKey = 'image' ?>
+        <?php include '../errors.php' ?>
 
-    <?php if (isset($_GET['edit']) && $_GET['edit']) : ?>
-        <img alt="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($rows['image']) ?>">
-    <?php endif ?>
-    <br />
+        <?php if (isset($_GET['edit']) && $_GET['edit']) : ?>
+            <img alt="<?= sanitize(trans('Product image')) ?>" src="images/<?= sanitize($rows['image']) ?>">
+        <?php endif ?>
+        <br/>
 
-    <input class="cartLink cartBtn" type="submit" name="submit" value="<?= sanitize(trans('Submit')) ?>">
-</form>
+        <input class="cartLink cartBtn" type="submit" name="submit" value="<?= sanitize(trans('Submit')) ?>">
+    </form>
 
-<a class="cartLink cartBtn" href="products.php"><?= trans(sanitize('Products')) ?></a>
+    <a class="cartLink cartBtn" href="products.php"><?= trans(sanitize('Products')) ?></a>
 
 <?php include('../footer.php') ?>

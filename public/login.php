@@ -32,26 +32,26 @@ $pageTitle = trans('Login Shop 1');
 include('../header.php');
 ?>
 
-<div class="container">
+    <div class="container">
 
-    <?php if (isset($_GET['unauthorized'])) : ?>
-        <p><?= sanitize(trans('Please log in')) ?></p>
-    <?php endif ?>
+        <?php if (isset($_GET['unauthorized'])) : ?>
+            <p><?= sanitize(trans('Please log in')) ?></p>
+        <?php endif ?>
 
-    <form method="POST" align = "left">
+        <form method="POST" align="left">
 
-        <label for="username"><?= sanitize(trans('Master username: ')) ?></label><br />
-        <input type="text" name="username" value="<?= sanitize($name) ?>"><br />
-        <?php $errorKey = 'username' ?>
-        <?php include '../errors.php' ?>
-        
-        <label for="password"><?= sanitize(trans('Master passcode: ')) ?></label><br />
-        <input type="password" name="password"><br />
-        <?php $errorKey = 'password' ?>
-        <?php include '../errors.php' ?>
+            <label for="username"><?= sanitize(trans('Master username: ')) ?></label><br/>
+            <input type="text" name="username" value="<?= sanitize($name) ?>"><br/>
+            <?php $errorKey = 'username' ?>
+            <?php include '../errors.php' ?>
 
-        <input type="submit" name="submit" value="<?= sanitize(trans('Log in')) ?>">
+            <label for="password"><?= sanitize(trans('Master passcode: ')) ?></label><br/>
+            <input type="password" name="password"><br/>
+            <?php $errorKey = 'password' ?>
+            <?php include '../errors.php' ?>
 
-    </form>
-</div>
+            <input type="submit" name="submit" value="<?= sanitize(trans('Log in')) ?>">
+
+        </form>
+    </div>
 <?php include('../footer.php') ?>
